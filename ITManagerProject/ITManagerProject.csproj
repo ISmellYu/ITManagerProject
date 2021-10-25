@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <UserSecretsId>aspnet-ITManagerProject-EA1276DD-D657-4826-9769-327BFBC3C6F0</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.9" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.9" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.9" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.9" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.9" />
+        <PackageReference Include="Westwind.AspNetCore.LiveReload" Version="0.3.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Data" />
+    </ItemGroup>
+
+</Project>
