@@ -25,6 +25,7 @@ namespace ITManagerProject.Controllers
         }
         
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel registerModel, string returnUrl = null)
         {
             var user = new User()
@@ -51,6 +52,7 @@ namespace ITManagerProject.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel loginModel, string returnUrl = null)
         {
             var user = await UserManager.FindByNameAsync(loginModel.Email);
