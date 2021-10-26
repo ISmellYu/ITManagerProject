@@ -29,7 +29,7 @@ namespace ITManagerProject
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddIdentity<User, UserRole>(options =>
+            services.AddIdentity<User, Role>(options =>
             {
                 options.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<UserAppContext>();

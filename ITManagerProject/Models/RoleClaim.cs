@@ -2,7 +2,7 @@
 
 namespace ITManagerProject.Models
 {
-    public class UserRole : IdentityUserRole<int>
+    public class RoleClaim : IdentityRoleClaim<int>
     {
         
     }
