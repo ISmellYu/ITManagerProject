@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
 namespace ITManagerProject.Models
@@ -7,6 +8,7 @@ namespace ITManagerProject.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        [Column(TypeName = "date")]
         public DateTime Birthday { get; set; }
     }
 }

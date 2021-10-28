@@ -2,7 +2,7 @@
 
 namespace ITManagerProject.Models
 {
-    public class Organization<TKey> where TKey : IEquatable<TKey>
+    public class Organization
     {
         public Organization()
         {
@@ -11,12 +11,17 @@ namespace ITManagerProject.Models
 
         public Organization(string organizationName) : this()
         {
-            
+            Name = organizationName;
         }
         
-        public TKey Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string NormalizedName { get; set; }
         public string ConcurrencyStamp { get; set; } = Guid.NewGuid().ToString();
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

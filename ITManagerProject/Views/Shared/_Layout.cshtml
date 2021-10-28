@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -12,9 +15,18 @@
     <header>
         <nav class="navbar navbar-light navbar-expand-md navigation-clean-button">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="~/favicon.ico" style="margin-bottom: 3.02px"/> Manager
-                </a>
+                @if (!SignInManager.IsSignedIn(User))
+                {
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <img src="~/favicon.ico" style="margin-bottom: 3.02px"/> Manager
+                    </a>
+                }
+                else
+                {
+                    <a class="navbar-brand" asp-area="" asp-controller="Dashboard" asp-action="Index">
+                        <img src="~/favicon.ico" style="margin-bottom: 3.02px"/> Manager
+                    </a>
+                }
                 <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
                     <span class="visually-hidden">Toggle navigation</span>
                     <span class="navbar-toggler-icon"></span>

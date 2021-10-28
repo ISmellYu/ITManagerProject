@@ -1,0 +1,10 @@
+﻿@model List<Organization>
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+@foreach (var org in Model)
+{
+    <span>@org.Id</span>
+    <span>@org.Name</span>
+}
