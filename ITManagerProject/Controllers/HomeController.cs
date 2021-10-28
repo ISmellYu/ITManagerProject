@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ITManagerProject.Models;
+using ITManagerProject.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ITManagerProject.Controllers

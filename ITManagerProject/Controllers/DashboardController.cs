@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using ITManagerProject.Models;
+using ITManagerProject.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,13 +21,31 @@ namespace ITManagerProject.Controllers
             return View(_dbContext.Organizations.ToList());
         }
         
-        public IActionResult Test()
+        public IActionResult Manage()
         {
-            _dbContext.Add(new Organization("test")
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Manage(OrganizationViewModel model)
+        {
+
+            int? org = null;
+            if (org == null)
             {
-                NormalizedName = "test".ToUpper()
-            });
-            _dbContext.SaveChanges();
+                _dbContext.Organizations.Add(new Organization()
+                {
+                    Name = model.Name,
+                    NormalizedName = model.Name.ToUpper()
+                });
+                await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                ModelState.AddModelError(String.Empty, "Dana organizacja juz istnieje");
+            }
+            
             return View();
         }
     }

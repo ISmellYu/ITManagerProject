@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using ITManagerProject.Models;
+using ITManagerProject.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +33,8 @@ namespace ITManagerProject.Controllers
             {
                 UserName = registerModel.Email,
                 Email = registerModel.Email,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true
             };
             var result = await UserManager.CreateAsync(user, registerModel.Password);
             if (result.Succeeded)

@@ -12,6 +12,7 @@ namespace ITManagerProject.Models
         public Organization(string organizationName) : this()
         {
             Name = organizationName;
+            NormalizedName = Name.ToUpper();
         }
         
         public int Id { get; set; }
