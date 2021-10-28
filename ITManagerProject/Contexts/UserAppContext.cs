@@ -49,8 +49,7 @@ namespace ITManagerProject.Models
                 b.HasKey(u => new { u.UserId, u.OrganizationId });
                 b.ToTable("UserOrganizations");
             });
-
-            
         }
     }
+
 }

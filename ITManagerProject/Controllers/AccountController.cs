@@ -29,23 +29,27 @@ namespace ITManagerProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel registerModel, string returnUrl = null)
         {
-            var user = new User()
+            if (ModelState.IsValid)
             {
-                UserName = registerModel.Email,
-                Email = registerModel.Email,
-                EmailConfirmed = true,
-                PhoneNumberConfirmed = true
-            };
-            var result = await UserManager.CreateAsync(user, registerModel.Password);
-            if (result.Succeeded)
-            {
-                Logger.LogInformation($"Zarejestrowano uzytkownika o nicku: {user.UserName}");
-                await SignInManager.SignInAsync(user, false);
-                returnUrl ??= Url.Content("~/");
-                return LocalRedirect(returnUrl);
+                var user = new User()
+                {
+                    UserName = registerModel.Email,
+                    Email = registerModel.Email,
+                    EmailConfirmed = true,
+                    PhoneNumberConfirmed = true
+                };
+                var result = await UserManager.CreateAsync(user, registerModel.Password);
+                if (result.Succeeded)
+                {
+                    Logger.LogInformation($"Zarejestrowano uzytkownika o nicku: {user.UserName}");
+                    await SignInManager.SignInAsync(user, false);
+                    returnUrl ??= Url.Content("~/");
+                    return LocalRedirect(returnUrl);
+                }
+                
+                foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
             }
-
-            foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
+            
             return View();
         }
         public async Task<IActionResult> Login(string returnUrl = null)
@@ -57,19 +61,22 @@ namespace ITManagerProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel loginModel, string returnUrl = null)
         {
-            var user = await UserManager.FindByNameAsync(loginModel.Email);
-
-            if (user != null)
+            if (ModelState.IsValid)
             {
-                var result = await SignInManager.PasswordSignInAsync(user, loginModel.Password, false, false);
+                var user = await UserManager.FindByNameAsync(loginModel.Email);
 
-                if (result.Succeeded)
+                if (user != null)
                 {
-                    Logger.LogInformation($"Zalogowano uzytkownika o nicku: {user.UserName}");
-                    returnUrl ??= Url.Content("~/");
-                    return LocalRedirect(returnUrl);
+                    var result = await SignInManager.PasswordSignInAsync(user, loginModel.Password, false, false);
+
+                    if (result.Succeeded)
+                    {
+                        Logger.LogInformation($"Zalogowano uzytkownika o nicku: {user.UserName}");
+                        returnUrl ??= Url.Content("~/");
+                        return LocalRedirect(returnUrl);
+                    }
+                    ModelState.AddModelError(string.Empty, "Nieprawidlowe dane logowania");
                 }
-                ModelState.AddModelError(string.Empty, "Nieprawidlowe dane logowania");
             }
             
             return View();

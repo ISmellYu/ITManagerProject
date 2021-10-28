@@ -1,6 +1,8 @@
-﻿namespace ITManagerProject.Managers
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace ITManagerProject.Managers
 {
-    public class OrganizationManager
+    public static class OrganizationManager
     {
         
     }

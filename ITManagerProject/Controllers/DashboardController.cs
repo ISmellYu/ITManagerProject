@@ -30,20 +30,22 @@ namespace ITManagerProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Manage(OrganizationViewModel model)
         {
-
-            int? org = null;
-            if (org == null)
+            if (ModelState.IsValid)
             {
-                _dbContext.Organizations.Add(new Organization()
+                var org = _dbContext.Organizations.FirstOrDefault(p => p.NormalizedName == model.Name.ToUpper());
+                if (org == null)
                 {
-                    Name = model.Name,
-                    NormalizedName = model.Name.ToUpper()
-                });
-                await _dbContext.SaveChangesAsync();
-            }
-            else
-            {
-                ModelState.AddModelError(String.Empty, "Dana organizacja juz istnieje");
+                    _dbContext.Organizations.Add(new Organization()
+                    {
+                        Name = model.Name,
+                        NormalizedName = model.Name.ToUpper()
+                    });
+                    await _dbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    ModelState.AddModelError(String.Empty, "Dana organizacja juz istnieje");
+                }
             }
             
             return View();
