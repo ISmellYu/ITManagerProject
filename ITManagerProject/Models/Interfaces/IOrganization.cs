@@ -1,8 +1,10 @@
-﻿namespace ITManagerProject.Models.Interfaces
+﻿using System;
+
+namespace ITManagerProject.Models.Interfaces
 {
-    public interface IOrganization
+    public interface IOrganization<TKey> where TKey : IEquatable<TKey>
     {
-        int Id { get; set; }
+        TKey Id { get; set; }
         string Name { get; set; }
         string NormalizedName { get; set; }
         string ConcurrencyStamp { get; set; }

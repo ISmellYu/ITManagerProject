@@ -1,28 +1,10 @@
 ﻿using System;
+using ITManagerProject.Models.Base;
 using ITManagerProject.Models.Interfaces;
 
 namespace ITManagerProject.Models
 {
-    public class Organization : IOrganization
+    public class Organization : IdentityOrganization<int>
     {
-        public Organization()
-        {
-            
-        }
-
-        public Organization(string organizationName) : this()
-        {
-            Name = organizationName;
-        }
-        
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string NormalizedName { get; set; }
-        public string ConcurrencyStamp { get; set; } = Guid.NewGuid().ToString();
-
-        public override string ToString()
-        {
-            return Name;
-        }
     }
 }

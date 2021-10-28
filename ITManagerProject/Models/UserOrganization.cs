@@ -1,10 +1,10 @@
-﻿using ITManagerProject.Models.Interfaces;
+﻿using System;
+using ITManagerProject.Models.Base;
+using ITManagerProject.Models.Interfaces;
 
 namespace ITManagerProject.Models
 {
-    public class UserOrganization : IUserOrganization
+    public class UserOrganization : IdentityUserOrganization<int>
     {
-        public int OrganizationId { get; set; }
-        public int UserId { get; set; }
     }
 }
