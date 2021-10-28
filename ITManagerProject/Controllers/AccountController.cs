@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ITManagerProject.Models;
 using ITManagerProject.ViewModels;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -52,12 +53,15 @@ namespace ITManagerProject.Controllers
             
             return View();
         }
+        [AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
+            await SignInManager.SignOutAsync();
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel loginModel, string returnUrl = null)
         {
@@ -75,8 +79,9 @@ namespace ITManagerProject.Controllers
                         returnUrl ??= Url.Content("~/");
                         return LocalRedirect(returnUrl);
                     }
-                    ModelState.AddModelError(string.Empty, "Nieprawidlowe dane logowania");
+                    
                 }
+                ModelState.AddModelError(string.Empty, "Nieprawidlowe dane logowania");
             }
             
             return View();

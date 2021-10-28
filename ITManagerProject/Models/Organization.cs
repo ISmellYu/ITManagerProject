@@ -1,8 +1,9 @@
 ﻿using System;
+using ITManagerProject.Models.Interfaces;
 
 namespace ITManagerProject.Models
 {
-    public class Organization
+    public class Organization : IOrganization
     {
         public Organization()
         {

@@ -1,8 +1,9 @@
 using System;
+using ITManagerProject.ViewModels.Interfaces;
 
 namespace ITManagerProject.ViewModels
 {
-    public class ErrorViewModel
+    public class ErrorViewModel : IErrorViewModel
     {
         public string RequestId { get; set; }
 

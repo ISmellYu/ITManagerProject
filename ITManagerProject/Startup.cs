@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -9,6 +10,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using ITManagerProject.Models;
+using ITManagerProject.Validators;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,11 +38,18 @@ namespace ITManagerProject
                 options.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<UserAppContext>();
 
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Events.OnValidatePrincipal = PrincipalValidator.ValidateAsync;
+            });
+
             services.AddDbContext<UserAppContext>(builder =>
             {
                 builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            //services.AddAuthorization();
             services.AddLiveReload(config =>
             {
                 // optional - use config instead

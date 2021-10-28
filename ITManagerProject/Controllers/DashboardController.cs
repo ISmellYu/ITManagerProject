@@ -5,6 +5,7 @@ using ITManagerProject.Models;
 using ITManagerProject.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ITManagerProject.Controllers
 {
@@ -12,8 +13,10 @@ namespace ITManagerProject.Controllers
     public class DashboardController : Controller
     {
         private readonly UserAppContext _dbContext;
-        public DashboardController(UserAppContext dbContext)
+        private readonly ILogger<DashboardController> _logger;
+        public DashboardController(UserAppContext dbContext, ILogger<DashboardController> logger)
         {
+            _logger = logger;
             _dbContext = dbContext;
         }
         public IActionResult Index()
@@ -44,7 +47,7 @@ namespace ITManagerProject.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(String.Empty, "Dana organizacja juz istnieje");
+                    ModelState.AddModelError(string.Empty, "Dana organizacja juz istnieje");
                 }
             }
             

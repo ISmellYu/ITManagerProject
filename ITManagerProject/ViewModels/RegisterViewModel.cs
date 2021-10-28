@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ITManagerProject.ViewModels.Interfaces;
 
 namespace ITManagerProject.ViewModels
 {
-    public class RegisterViewModel
+    public class RegisterViewModel : IRegisterViewModel
     {
         [Required]
         [EmailAddress]
