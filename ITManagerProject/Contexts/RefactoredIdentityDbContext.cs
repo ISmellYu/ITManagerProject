@@ -1,10 +1,11 @@
 ﻿using System;
+using ITManagerProject.Models;
 using ITManagerProject.Models.Base;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ITManagerProject.Models
+namespace ITManagerProject.Contexts
 {
     public class RefactoredIdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken, TOrganization, TUserOrganization> : IdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
         where TUser : IdentityUser<TKey>

@@ -9,6 +9,7 @@ namespace ITManagerProject.Stores.Interfaces
     public interface IOrganizationStore<TOrganization, TUser> : IDisposable where TOrganization : IDisposable where TUser : class
     {
         Task CreateOrganizationAsync(string organizationName, CancellationToken cancellationToken);
+        Task CreateOrganizationAsync(TOrganization organization, CancellationToken cancellationToken);
         Task<bool> ExistsByNameAsync(string organizationName, CancellationToken cancellationToken);
         Task<bool> ExistsByIdAsync(string organizationId, CancellationToken cancellationToken);
         Task<bool> ExistsByUserAsync(TUser user, CancellationToken cancellationToken);
