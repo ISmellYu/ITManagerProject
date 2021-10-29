@@ -2,7 +2,7 @@
 
 namespace ITManagerProject.Managers
 {
-    public class OrganizationManager<TUser, TContext, TKey>
+    public class OrganizationManager<TUser, TContext, TKey> : 
     {
         
     }
