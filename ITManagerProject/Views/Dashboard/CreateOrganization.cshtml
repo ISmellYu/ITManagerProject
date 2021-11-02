@@ -1,0 +1,22 @@
+﻿@model ITManagerProject.ViewModels.OrganizationViewModel
+@{
+    ViewData["Title"] = "Stworz organizacje";
+    Layout = "_LoginLayout";
+}
+
+<section class="login-dark" style="height: 100%;">
+    <form method="post" style="max-width: 500px;">
+        <div class="illustration"><i class="icon ion-ios-people-outline"></i></div>
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="mb-3">
+            <input type="text" class="form-control" name="Name" placeholder="Nazwa organizacji" asp-for="Name"/>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-primary d-block w-100" type="submit">Stworz organizacje</button>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}
