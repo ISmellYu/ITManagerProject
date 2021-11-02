@@ -17,10 +17,13 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.9" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.9" />
         <PackageReference Include="Westwind.AspNetCore.LiveReload" Version="0.3.5" />
+        <PackageReference Include="XLocalizer" Version="1.0.3" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Data" />
+      <Folder Include="Managers\Interfaces" />
+      <Folder Include="Migrations" />
     </ItemGroup>
 
 </Project>

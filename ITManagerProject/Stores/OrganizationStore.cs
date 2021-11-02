@@ -1,7 +1,11 @@
-﻿namespace ITManagerProject.Stores
+﻿using System;
+using System.Threading;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+namespace ITManagerProject.Stores
 {
-    public class OrganizationStore
+    public class OrganizationStore<TOrganization>
     {
-        
     }
 }

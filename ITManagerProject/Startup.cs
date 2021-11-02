@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using ITManagerProject.Contexts;
+using ITManagerProject.Managers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
@@ -16,6 +17,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Westwind.AspNetCore.LiveReload;
 
@@ -37,7 +39,7 @@ namespace ITManagerProject
             services.AddIdentity<User, Role>(options =>
             {
                 options.User.RequireUniqueEmail = true;
-            }).AddEntityFrameworkStores<UserAppContext>();
+            }).AddEntityFrameworkStores<UserAppContext>().AddErrorDescriber<LocalizedIdentityErrorDescriber>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
             services.ConfigureApplicationCookie(options =>
@@ -49,7 +51,8 @@ namespace ITManagerProject
             {
                 builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
             });
-
+            
+            services.TryAddScoped<OrganizationManager<Organization>>();
             //services.AddAuthorization();
             services.AddLiveReload(config =>
             {

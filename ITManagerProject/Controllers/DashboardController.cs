@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using ITManagerProject.Contexts;
+using ITManagerProject.Managers;
 using ITManagerProject.Models;
 using ITManagerProject.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -14,45 +15,61 @@ namespace ITManagerProject.Controllers
     public class DashboardController : Controller
     {
         private readonly UserAppContext _dbContext;
+        private readonly OrganizationManager<Organization> _organizationManager;
         private readonly ILogger<DashboardController> _logger;
-        public DashboardController(UserAppContext dbContext, ILogger<DashboardController> logger)
+
+        public DashboardController(UserAppContext dbContext, OrganizationManager<Organization> organizationManager, ILogger<DashboardController> logger)
         {
+            _organizationManager = organizationManager;
             _logger = logger;
             _dbContext = dbContext;
         }
         public IActionResult Index()
         {
-            return View(_dbContext.Organizations.ToList());
+            return View();
         }
-        
-        public IActionResult Manage()
+
+        public async Task<IActionResult> CreateOrganization()
         {
+            var user = await _organizationManager.UserManager.GetUserAsync(User);
+            var alreadyIn = await _organizationManager.CheckIfInAnyOrganizationAsync(user);
+            if (alreadyIn)
+            {
+                return RedirectToAction("Index");
+            }
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Manage(OrganizationViewModel model)
+        public async Task<IActionResult> CreateOrganization(OrganizationViewModel model, string returnUrl = null)
         {
             if (ModelState.IsValid)
             {
-                var org = _dbContext.Organizations.FirstOrDefault(p => p.NormalizedName == model.Name.ToUpper());
-                if (org == null)
+                var exists = await _organizationManager.CheckIfOrganizationExistsAsync(model.Name);
+                if (exists)
                 {
-                    _dbContext.Organizations.Add(new Organization()
-                    {
-                        Name = model.Name,
-                        NormalizedName = model.Name.ToUpper()
-                    });
-                    await _dbContext.SaveChangesAsync();
+                    ModelState.AddModelError(string.Empty, "Dana organizacja juz istnieje!");
+                    return View();
                 }
-                else
+                var user = await _organizationManager.UserManager.GetUserAsync(User);
+                var alreadyIn = await _organizationManager.CheckIfInAnyOrganizationAsync(user);
+
+                if (alreadyIn)
                 {
-                    ModelState.AddModelError(string.Empty, "Dana organizacja juz istnieje");
+                    ModelState.AddModelError(string.Empty, "Nie mozesz stworzyc organizacji!");
+                    return View();
                 }
+                await _organizationManager.CreateAsync(model.Name);
+                
+                await _organizationManager.AddToOrganizationAsync(user, model.Name);
+
+                return RedirectToAction("Index");
             }
             
             return View();
         }
+        
+        
     }
 }

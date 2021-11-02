@@ -2,60 +2,51 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="height: 100%">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>ITManagerProject</title>
+    <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css"/>
-    <link rel="stylesheet" href="~/css/Navigation-with-Button.css" />
+    <link rel="stylesheet" href="~/css/Navigation-with-Button.css"/>
+    <link rel="stylesheet" href="~/css/gradient-navbar.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet">
+    
 </head>
-<body>
+<body class="container-fluid" style="background: linear-gradient(120deg, #00e4d0, #5983e8);font-family: Arvo, serif;">
     <header>
-        <nav class="navbar navbar-light navbar-expand-md navigation-clean-button">
-            <div class="container">
+        <nav class="navbar navbar-light navbar-expand-md" id="app-navbar" style="padding-bottom: 24px;">
+            <div class="container-fluid">
                 @if (!SignInManager.IsSignedIn(User))
                 {
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                        <img src="~/favicon.ico" style="margin-bottom: 3.02px"/> Manager
+                        <img src="~/favicon.ico" style="width: 30px" id="brand-logo" class="icon"/>
                     </a>
                 }
                 else
                 {
                     <a class="navbar-brand" asp-area="" asp-controller="Dashboard" asp-action="Index">
-                        <img src="~/favicon.ico" style="margin-bottom: 3.02px"/> Manager
+                        <img src="~/favicon.ico" style="width: 30px" id="brand-logo" class="icon"/>
                     </a>
                 }
-                <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
+                <button data-bs-toggle="collapse" data-bs-target="#navcol-1" class="navbar-toggler">
                     <span class="visually-hidden">Toggle navigation</span>
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navcol-1">
-                    <ul class="navbar-nav mx-auto">
-                        <li class="nav-item"></li>
+                <div class="collapse navbar-collapse d-xxl-flex justify-content-end align-items-end align-content-end justify-content-xxl-end" id="navcol-1">
+                    <ul class="navbar-nav ml-auto">
+                        <partial name="_LoginPartial"/>
                     </ul>
-                    <partial name="_LoginPartial"/>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+@RenderBody()
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - I.T Manager
-        </div>
-    </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-
-    @await RenderSectionAsync("Scripts", required: false)
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

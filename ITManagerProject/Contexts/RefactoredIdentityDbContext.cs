@@ -33,7 +33,7 @@ namespace ITManagerProject.Contexts
         {
             base.OnModelCreating(builder);
             
-            builder.Entity<User>(b =>
+            builder.Entity<TUser>(b =>
             {
                 b.HasMany<TUserOrganization>().WithOne().HasForeignKey(u => u.UserId).IsRequired();
             });
@@ -49,7 +49,8 @@ namespace ITManagerProject.Contexts
                 b.Property(u => u.Name).HasMaxLength(256);
                 b.Property(u => u.NormalizedName).HasMaxLength(256);
 
-                b.HasMany<TUserOrganization>().WithOne().HasForeignKey(u => u.UserId).IsRequired();
+                b.HasMany<TUserOrganization>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
+                
             });
             builder.Entity<TUserOrganization>(b =>
             {

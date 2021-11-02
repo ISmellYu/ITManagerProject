@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Humanizer.Localisation;
 using ITManagerProject.Models;
+using ITManagerProject.Validators;
 using ITManagerProject.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -23,6 +25,11 @@ namespace ITManagerProject.Controllers
         }
         public async Task<IActionResult> Register()
         {
+            if (SignInManager.IsSignedIn(User))
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+            await SignInManager.SignOutAsync();
             return View();
         }
         
@@ -36,6 +43,8 @@ namespace ITManagerProject.Controllers
                 {
                     UserName = registerModel.Email,
                     Email = registerModel.Email,
+                    FirstName = registerModel.FirstName,
+                    LastName = registerModel.LastName,
                     EmailConfirmed = true,
                     PhoneNumberConfirmed = true
                 };
@@ -44,18 +53,30 @@ namespace ITManagerProject.Controllers
                 {
                     Logger.LogInformation($"Zarejestrowano uzytkownika o nicku: {user.UserName}");
                     await SignInManager.SignInAsync(user, false);
+                    if (returnUrl == null)
+                    {
+                        return RedirectToAction("Index", "Dashboard");
+                    }
                     returnUrl ??= Url.Content("~/");
                     return LocalRedirect(returnUrl);
                 }
-                
-                foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
+
+                foreach (var error in result.Errors)
+                {
+                    if (error.Code == nameof(IdentityErrorDescriber.DuplicateUserName))
+                        continue;
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
-            
             return View();
         }
         [AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
+            if (SignInManager.IsSignedIn(User))
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
             await SignInManager.SignOutAsync();
             return View();
         }

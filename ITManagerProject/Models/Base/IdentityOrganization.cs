@@ -15,10 +15,10 @@ namespace ITManagerProject.Models.Base
             Name = organizationName;
         }
 
-        public TKey Id { get; set; }
-        public string Name { get; set; }
-        public string NormalizedName { get; set; }
-        public string ConcurrencyStamp { get; set; } = Guid.NewGuid().ToString();
+        public virtual TKey Id { get; set; }
+        public virtual string Name { get; set; }
+        public virtual string NormalizedName { get; set; }
+        public virtual string ConcurrencyStamp { get; set; } = Guid.NewGuid().ToString();
 
         public override string ToString()
         {

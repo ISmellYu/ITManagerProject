@@ -8,16 +8,18 @@ using Microsoft.Extensions.Logging;
 using ITManagerProject.Models;
 using ITManagerProject.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace ITManagerProject.Controllers
 {
-    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly SignInManager<User> _signInManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, SignInManager<User> signInManager)
         {
+            _signInManager = signInManager;
             _logger = logger;
         }
 

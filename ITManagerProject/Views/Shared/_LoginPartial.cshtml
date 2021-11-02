@@ -4,13 +4,20 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <a class="nav-link">Witaj @User.Identity.Name!</a>
-    <a class="btn btn-info" type="submit" asp-area="" asp-controller="Account" asp-action="Logout">Wyloguj</a>
+    var usr = await UserManager.GetUserAsync(User);
+    <li class="nav-item">
+        <a class="nav-link">Witaj @usr.FirstName @usr.LastName!</a>
+    </li>
+    <li class="nav-item">
+        <a class="btn btn-info" type="submit" asp-area="" asp-controller="Account" asp-action="Logout">Wyloguj</a>
+    </li>
 }
 else
 {
-    <span class="navbar-text actions">
-        <a class="login" asp-area="" asp-controller="Account" asp-action="Login" asp-route-returnUrl="">Zaloguj</a>
-        <a class="btn btn-light action-button" asp-area="" asp-controller="Account" asp-action="Register">Zarejestruj</a>
-    </span>
+    <li class="nav-item">
+        <a class="nav-link active" asp-area="" asp-controller="Account" asp-action="Login" asp-route-returnUrl="">Zaloguj</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register">Zarejestruj</a>
+    </li>
 }
