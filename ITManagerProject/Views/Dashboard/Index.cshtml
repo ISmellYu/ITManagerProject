@@ -2,6 +2,8 @@
 @using Microsoft.AspNetCore.Identity
 @inject OrganizationManager<Organization> _organizationManager;
 @inject UserManager<User> _userManager;
+@inject RoleManager<Role> _roleManager;
+@model ITManagerProject.ViewModels.AddUserModel
 @{
     ViewData["Title"] = "Dashboard";
 }
@@ -10,14 +12,87 @@
     var usr = await _userManager.GetUserAsync(User);
     if (await _organizationManager.CheckIfInAnyOrganizationAsync(usr))
     {
-        var org = await _organizationManager.GetOrganization(usr);
+        var org = await _organizationManager.GetOrganizationFromUserAsync(usr);
+        var listOfUsers = await _organizationManager.GetAllUsersFromOrganizationAsync(org.Name);
         <div class="text-center">
             <h1 style="font-size: 70px">Witaj!</h1>
         </div>
         <div class="text-center">
             <h1>Znajdujesz sie w organizacji o nazwie: @org.Name</h1>
         </div>
-        
+        <div>
+            <div class="form-group pull-right">
+                <input type="text" class="search form-control" placeholder="Kogo szukasz?"/>
+            </div><span class="counter pull-right"></span>
+            <div class="form-group pull-left">
+                <a class="btn btn-success" data-toggle="modal" data-target="#exampleModal" type="button">
+                    <i class="icon ion-android-add"></i>
+                    Dodaj pracownika
+                </a>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><i class="icon ion-android-add"></i> Dodaj pracownika</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="post" asp-area="" asp-action="AddToOrganization" asp-controller="Dashboard">
+                        <div class="modal-body">
+                        <div class="mb-3">
+                            <label>Rola: </label>
+                            @Html.DropDownListFor(m => m.RoleId, Model.RolesList, "Wybierz", new {@class="Roles"})
+                        </div>
+                        <div class="mb-3">
+                            <label>Uzytkownik: </label>
+                            @Html.DropDownListFor(m => m.UserId, Model.UsersList, "Wybierz", new {@class="Users"})
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                    </div>
+                    </form>
+                </div>
+              </div>
+            </div>
+            <table class="table table-hover table-bordered results">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th class="col-md-5 col-xs-5">Imie i Nazwisko</th>
+                    <th class="col-md-4 col-xs-4">Role</th>
+                    <th class="col-md-3 col-xs-3">Email</th>
+                </tr>
+                <tr class="warning no-result">
+                    <td colspan="4"><i class="fa fa-warning"></i> Nie ma wynikow</td>
+                </tr>
+                </thead>
+                <tbody>
+                @for (var i = 0; i < listOfUsers.Count; i++)
+                {
+                    <tr>
+                        @{
+                            var id = i + 1;
+                            <th scope="row">@id</th>
+                        }
+                        <td>
+                            @listOfUsers[i].User.FirstName @listOfUsers[i].User.LastName
+                        </td>
+                        <td>
+                            @string.Join(", ", listOfUsers[i].Roles)
+                        </td>
+                        <td>
+                            @listOfUsers[i].User.Email
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
     }
     else
     {
@@ -33,4 +108,17 @@
             <a class="btn btn-success btn-lg" type="button" asp-area="" asp-controller="Dashboard" asp-action="CreateOrganization">Zaloz organizacje</a>
         </div>
     }
+}
+
+@section Scripts
+{
+    <script src="lib/chosen/dist/js/chosen.jquery.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $(".Roles").chosen();
+            $(".Users").chosen();
+          
+        })
+    </script>
+    <script src="~/js/Table-with-search.js"></script>
 }

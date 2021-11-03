@@ -16,6 +16,8 @@
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.11" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.9" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.9" />
+        <PackageReference Include="PasswordGenerator" Version="2.0.5" />
+        <PackageReference Include="RandomUserSharp" Version="2.0.1" />
         <PackageReference Include="Westwind.AspNetCore.LiveReload" Version="0.3.5" />
         <PackageReference Include="XLocalizer" Version="1.0.3" />
     </ItemGroup>
@@ -24,6 +26,8 @@
       <Folder Include="Data" />
       <Folder Include="Managers\Interfaces" />
       <Folder Include="Migrations" />
+      <Folder Include="wwwroot\lib\chosen\dist\css" />
+      <Folder Include="wwwroot\lib\chosen\dist\js" />
     </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using ITManagerProject.Contexts;
 using ITManagerProject.Models;
 using ITManagerProject.Models.Interfaces;
 using ITManagerProject.Stores.Interfaces;
+using ITManagerProject.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -18,11 +20,13 @@ namespace ITManagerProject.Managers
         private IQueryable<Organization> Organizations => _dbContext.Organizations.AsQueryable();
         private IQueryable<UserOrganization> UserOrganizations => _dbContext.UserOrganizations.AsQueryable();
         public readonly UserManager<User> UserManager;
+        public readonly RoleManager<Role> RoleManager;
         
         private bool _disposed;
 
-        public OrganizationManager(UserAppContext dbContext, UserManager<User> userManager)
+        public OrganizationManager(UserAppContext dbContext, UserManager<User> userManager, RoleManager<Role> roleManager)
         {
+            RoleManager = roleManager;
             UserManager = userManager;
             _dbContext = dbContext;
         }
@@ -56,7 +60,7 @@ namespace ITManagerProject.Managers
             return true;
         }
         
-        public async Task<bool> AddToOrganizationAsync(User user, string organizationName)
+        public async Task<bool> AddToOrganizationAsync(User user, string organizationName, string role = null)
         {
             ThrowIfDisposed();
             
@@ -69,9 +73,47 @@ namespace ITManagerProject.Managers
                 return false;
             }
 
-            var org = await FindOrganizationAsync(normalizedOrganizationName);
+            var org = await GetOrganizationAsync(normalizedOrganizationName);
 
             _dbContext.UserOrganizations.Add(CreateUserOrganization(user, org));
+            if (role != null)
+            {
+                await UserManager.AddToRoleAsync(user, role);
+            }
+            else
+            {
+                await UserManager.AddToRoleAsync(user, "CEO");
+            }
+            
+            await _dbContext.SaveChangesAsync();
+            
+            return true;
+        }
+        
+        public async Task<bool> AddToOrganizationAsync(User user, Organization organization, string role = null)
+        {
+            ThrowIfDisposed();
+
+            var organizationName = organization.Name;
+            var exists = await CheckIfOrganizationExistsAsync(organizationName);
+            
+            if (!exists) return false;
+            var normalizedOrganizationName = Normalize(organizationName);
+            if (await CheckIfInAnyOrganizationAsync(user))
+            {
+                return false;
+            }
+
+            _dbContext.UserOrganizations.Add(CreateUserOrganization(user, organization));
+            if (role != null)
+            {
+                await UserManager.AddToRoleAsync(user, role);
+            }
+            else
+            {
+                await UserManager.AddToRoleAsync(user, "CEO");
+            }
+            
             await _dbContext.SaveChangesAsync();
             
             return true;
@@ -91,13 +133,13 @@ namespace ITManagerProject.Managers
             }
 
             var normalizedOrgName = Normalize(organizationName);
-            var org = await FindOrganizationAsync(organizationName);
+            var org = await GetOrganizationAsync(organizationName);
 
             if (org != null)
             {
                 if (await CheckIfInOrganizationAsync(user, normalizedOrganizationName))
                 {
-                    var userOrg = await FindUserOrganizationAsync(user, org);
+                    var userOrg = await GetUserOrganizationAsync(user, org);
                     if (userOrg != null)
                     {
                         _dbContext.UserOrganizations.Remove(userOrg);
@@ -115,7 +157,7 @@ namespace ITManagerProject.Managers
             var exists = await Organizations.AnyAsync(p => p.NormalizedName == Normalize(organizationName));
             return exists;
         }
-
+        
         public async Task<bool> CheckIfInOrganizationAsync(User user, string normalizedOrganizationName)
         {
             ThrowIfDisposed();
@@ -125,10 +167,10 @@ namespace ITManagerProject.Managers
                 throw new ArgumentException();
             }
 
-            var org = await FindOrganizationAsync(normalizedOrganizationName);
+            var org = await GetOrganizationAsync(normalizedOrganizationName);
             if (org != null)
             {
-                var userOrg = await FindUserOrganizationAsync(user.Id, org.Id);
+                var userOrg = await GetUserOrganizationAsync(user.Id, org.Id);
                 return userOrg != null;
             }
 
@@ -144,42 +186,94 @@ namespace ITManagerProject.Managers
                 throw new ArgumentException();
             }
 
-            var org = await FindOrganizationAsync(organization.NormalizedName);
+            var org = await GetOrganizationAsync(organization.NormalizedName);
             if (org != null)
             {
-                var userOrg = await FindUserOrganizationAsync(user.Id, org.Id);
+                var userOrg = await GetUserOrganizationAsync(user.Id, org.Id);
                 return userOrg != null;
             }
 
             return false;
         }
-
-
+        
         public async Task<bool> CheckIfInAnyOrganizationAsync(User user)
         {
+            ThrowIfDisposed();
             var exists = await UserOrganizations.AnyAsync(p => p.UserId == user.Id);
             return exists;
         }
 
-        public async Task<Organization> GetOrganization(User user)
+        public async Task<Organization> GetOrganizationFromUserAsync(User user)
         {
+            ThrowIfDisposed();
             var userOrg = await UserOrganizations.FirstOrDefaultAsync(p => p.UserId == user.Id);
             return await Organizations.FirstOrDefaultAsync(p => p.Id == userOrg.OrganizationId);
         }
 
-        private async Task<Organization> FindOrganizationAsync(string normalizedName)
+        private async Task<Organization> GetOrganizationAsync(string normalizedName)
         {
+            ThrowIfDisposed();
             return await Organizations.SingleOrDefaultAsync(p => p.NormalizedName == normalizedName, CancellationToken.None);
         }
         
-        private async Task<UserOrganization> FindUserOrganizationAsync(int userId, int orgId)
+        private async Task<UserOrganization> GetUserOrganizationAsync(int userId, int orgId)
         {
+            ThrowIfDisposed();
             return await _dbContext.UserOrganizations.FindAsync(new object[userId, orgId]).AsTask();
         }
         
-        private async Task<UserOrganization> FindUserOrganizationAsync(User user, Organization org)
+        private async Task<UserOrganization> GetUserOrganizationAsync(User user, Organization org)
         {
+            ThrowIfDisposed();
             return await _dbContext.UserOrganizations.FindAsync(new object[user.Id, org.Id]).AsTask();
+        }
+
+        public async Task<List<UserOrganizationViewModel>> GetAllUsersFromOrganizationAsync(string organizationName)
+        {
+            ThrowIfDisposed();
+
+            if (string.IsNullOrWhiteSpace(organizationName))
+            {
+                throw new ArgumentException();
+            }
+
+            var normalizedName = Normalize(organizationName);
+            var exists = await CheckIfOrganizationExistsAsync(normalizedName);
+
+            if (!exists) return null;
+
+            var org = await GetOrganizationAsync(normalizedName);
+
+            var listOfUsers = new List<UserOrganizationViewModel>();
+            if (org != null)
+            {
+                var userIds = await GetUserIdsFromOrganization(org);
+                foreach (var id in userIds)
+                {
+                    var user = await UserManager.FindByIdAsync(id.ToString());
+                    var userRoles = await UserManager.GetRolesAsync(user);
+
+                    var viewModel = new UserOrganizationViewModel()
+                    {
+                        User = user,
+                        Roles = userRoles as List<string>
+                    };
+                    
+                    listOfUsers.Add(viewModel);
+                }
+            }
+
+            return listOfUsers;
+        }
+
+        private async Task<User> GetUserById(int id)
+        {
+            return await UserManager.Users.FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        private async Task<List<int>> GetUserIdsFromOrganization(Organization org)
+        {
+            return UserOrganizations.Where(p => p.OrganizationId == org.Id).Select(organization => organization.UserId).ToList();
         }
 
         private string Normalize(string txt)

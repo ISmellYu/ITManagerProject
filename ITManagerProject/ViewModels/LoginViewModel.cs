@@ -8,7 +8,7 @@ namespace ITManagerProject.ViewModels
         [Required(ErrorMessage = "Email nie moze byc pusty!")]
         [EmailAddress(ErrorMessage = "Wpisales zly format emaila!")]
         [Display(Name = "Email")]
-        [DataType(DataType.EmailAddress, ErrorMessage = "")]
+        [DataType(DataType.EmailAddress, ErrorMessage = "Zly format emaila")]
         public string Email { get; set; }
         
         [Required(ErrorMessage = "Haslo nie moze byc puste!")]
