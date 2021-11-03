@@ -4,10 +4,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using ITManagerProject.Contexts;
+using ITManagerProject.HelperTypes;
 using ITManagerProject.Managers;
 using ITManagerProject.Models;
 using ITManagerProject.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -22,6 +24,7 @@ namespace ITManagerProject.Controllers
         private readonly UserAppContext _dbContext;
         private readonly OrganizationManager<Organization> _organizationManager;
         private readonly ILogger<DashboardController> _logger;
+        private Organization _currentOrganization;
 
         public DashboardController(UserAppContext dbContext, OrganizationManager<Organization> organizationManager, ILogger<DashboardController> logger)
         {
@@ -29,6 +32,7 @@ namespace ITManagerProject.Controllers
             _logger = logger;
             _dbContext = dbContext;
         }
+        
         public async Task<IActionResult> Index()
         {
             var v = new AddUserModel();
@@ -95,9 +99,11 @@ namespace ITManagerProject.Controllers
             
             return View();
         }
+        
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "CEO")]
         public async Task<IActionResult> AddToOrganization(AddUserModel userModel, string returnUrl = null)
         {
             if (ModelState.IsValid)
@@ -125,21 +131,28 @@ namespace ITManagerProject.Controllers
 
         public async Task<IActionResult> Test()
         {
-            var l = new RandomUserClient();
-            var k = await l.GetRandomUsersAsync(100);
-            var pwd = new Password().IncludeLowercase().IncludeUppercase().IncludeSpecial().LengthRequired(16).IncludeNumeric();
-            foreach (var user in k.Select(s => new User()
+            // var l = new RandomUserClient();
+            // var k = await l.GetRandomUsersAsync(100);
+            // var pwd = new Password().IncludeLowercase().IncludeUppercase().IncludeSpecial().LengthRequired(16).IncludeNumeric();
+            // foreach (var user in k.Select(s => new User()
+            // {
+            //     UserName = s.Email,
+            //     Email = s.Email,
+            //     FirstName = s.Name.First,
+            //     LastName = s.Name.Last,
+            //     EmailConfirmed = true,
+            //     PhoneNumberConfirmed = true
+            // }))
+            // {
+            //     var result = await _organizationManager.UserManager.CreateAsync(user, pwd.Next());
+            // }
+            await _organizationManager.RoleManager.SeedClaimsForRole("CEO", new List<string>()
             {
-                UserName = s.Email,
-                Email = s.Email,
-                FirstName = s.Name.First,
-                LastName = s.Name.Last,
-                EmailConfirmed = true,
-                PhoneNumberConfirmed = true
-            }))
-            {
-                var result = await _organizationManager.UserManager.CreateAsync(user, pwd.Next());
-            }
+                "Permissions.Users.View",
+                "Permissions.Users.Add",
+                "Permissions.Users.Remove",
+                "Permissions.Users.Edit"
+            });
             return View();
         }
     }

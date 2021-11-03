@@ -40,8 +40,15 @@ namespace ITManagerProject
             {
                 options.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<UserAppContext>().AddErrorDescriber<LocalizedIdentityErrorDescriber>();
-
+            
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CanAddUsers", policy =>
+                {
+                    policy.RequireClaim("Permission", "CanAddUsers");
+                });
+            });
             services.ConfigureApplicationCookie(options =>
             {
                 options.Events.OnValidatePrincipal = PrincipalValidator.ValidateAsync;

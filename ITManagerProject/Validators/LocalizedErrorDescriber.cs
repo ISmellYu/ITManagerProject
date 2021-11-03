@@ -108,7 +108,7 @@ namespace ITManagerProject.Validators
             return new IdentityError
             {
                 Code = nameof(PasswordRequiresNonAlphanumeric),
-                Description = "Hasło nie może zawierać tylko liczb!"
+                Description = "Hasło musi zawierac specjalny znak!"
             };
         }
 
