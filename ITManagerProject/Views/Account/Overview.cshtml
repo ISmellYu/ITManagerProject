@@ -1,0 +1,121 @@
+﻿@using ITManagerProject.Managers
+@using System.Security.Claims
+@using Microsoft.CodeAnalysis.CSharp.Syntax
+@inject OrganizationManager<Organization> _organizationManager;
+@{
+    ViewData["Title"] = "Profil";
+}
+@{
+    var user = await _organizationManager.UserManager.GetUserAsync(User);
+    var org = await _organizationManager.GetOrganizationFromUserAsync(user);
+    string role = null;
+    IEnumerable<string> claims = null;
+    if (org != null)
+    {
+        role = await _organizationManager.GetRoleForUser(user);
+        var roleObject = await _organizationManager.RoleManager.FindByNameAsync(role);
+        var claimsBefore = await _organizationManager.RoleManager.GetClaimsAsync(roleObject) as List<Claim>;
+        claims = claimsBefore?.Select(p => p.Value);
+    }
+
+}
+<div class="container">
+    <div class="main-body">
+        <div class="row gutters-sm">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column align-items-center text-center"><img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Profile" class="rounded-circle" width="150" />
+                            <div class="mt-3">
+                                <h4>@user.FirstName @user.LastName</h4>
+                                @if (org != null)
+                                {
+                                    <p class="text-secondary mb-1">@role</p>
+                                    <p class="text-secondary mb-2">@org.Name</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Imie i Nazwisko</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                @user.FirstName @user.LastName
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Email</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                @user.Email
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Organizacja</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                @{
+                                    if (org != null)
+                                    {
+                                        @org.Name
+                                    }
+                                    else
+                                    {
+                                        var brak = "Brak";
+                                        @brak
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Rola</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                @if (org != null)
+                                {
+                                    @role
+                                }
+                                else
+                                {
+                                    var brak = "Brak";
+                                    @brak
+                                }
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Permisje</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                @if (claims != null)
+                                {
+                                    @string.Join(", ", claims ?? Array.Empty<string>())
+                                }
+                                else
+                                {
+                                    var brak = "Brak";
+                                    @brak
+                                }
+                                
+                            </div>
+                        </div>
+                        <hr />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

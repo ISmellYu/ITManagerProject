@@ -103,21 +103,27 @@ namespace ITManagerProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "CEO")]
+        [Authorize(Policy = PolicyTypes.Users.Manage)]
         public async Task<IActionResult> AddToOrganization(AddUserModel userModel, string returnUrl = null)
         {
             if (ModelState.IsValid)
             {
+                
                 var currUser = await _organizationManager.UserManager.GetUserAsync(User);
                 var modUser = await _organizationManager.UserManager.FindByIdAsync(userModel.UserId);
+                
                 var alreadyIn = await _organizationManager.CheckIfInAnyOrganizationAsync(modUser);
 
+                var c = await _organizationManager.UserManager.GetClaimsAsync(currUser);
                 if (alreadyIn)
                 {
                     ModelState.AddModelError(string.Empty, "Nie mozna dodac!");
                     return View("Index");
                 }
 
+                var rs = await _organizationManager.GetRoleForUser(currUser);
+                var roleObject = await _organizationManager.RoleManager.FindByNameAsync(rs);
+                var claimsBefore = await _organizationManager.RoleManager.GetClaimsAsync(roleObject) as List<Claim>;
                 var role = await _organizationManager.RoleManager.FindByIdAsync(userModel.RoleId);
                 await _organizationManager.AddToOrganizationAsync(modUser,
                     await _organizationManager.GetOrganizationFromUserAsync(currUser), role.Name);
@@ -127,31 +133,22 @@ namespace ITManagerProject.Controllers
 
             return RedirectToAction("Index");
         }
-
+        
+        
+        public IActionResult AccessDenied(string returnUrl = null)
+        {
+            return View();
+        }
 
         public async Task<IActionResult> Test()
         {
-            // var l = new RandomUserClient();
-            // var k = await l.GetRandomUsersAsync(100);
-            // var pwd = new Password().IncludeLowercase().IncludeUppercase().IncludeSpecial().LengthRequired(16).IncludeNumeric();
-            // foreach (var user in k.Select(s => new User()
-            // {
-            //     UserName = s.Email,
-            //     Email = s.Email,
-            //     FirstName = s.Name.First,
-            //     LastName = s.Name.Last,
-            //     EmailConfirmed = true,
-            //     PhoneNumberConfirmed = true
-            // }))
-            // {
-            //     var result = await _organizationManager.UserManager.CreateAsync(user, pwd.Next());
-            // }
             await _organizationManager.RoleManager.SeedClaimsForRole("CEO", new List<string>()
             {
-                "Permissions.Users.View",
-                "Permissions.Users.Add",
-                "Permissions.Users.Remove",
-                "Permissions.Users.Edit"
+                Permissions.Users.Add,
+                Permissions.Users.Edit,
+                Permissions.Users.View,
+                Permissions.Users.Remove,
+
             });
             return View();
         }

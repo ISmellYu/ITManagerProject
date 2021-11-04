@@ -1,6 +1,6 @@
 ﻿namespace ITManagerProject.HelperTypes
 {
-    public enum RoleTypes
+    public enum RoleTypesEnum
     {
         CEO = 1,
         CTO,

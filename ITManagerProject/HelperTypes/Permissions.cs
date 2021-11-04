@@ -9,17 +9,6 @@ namespace ITManagerProject.HelperTypes
 {
     public static class Permissions
     {
-        public static List<string> GeneratePermissionsForModule(string module)
-        {
-            return new List<string>()
-            {
-                $"Permissions.{module}.Create",
-                $"Permissions.{module}.View",
-                $"Permissions.{module}.Edit",
-                $"Permissions.{module}.Delete",
-            };
-        }
-        
         public static async Task SeedClaimsForRole(this RoleManager<Role> roleManager, string roleName, List<string> permissions)
         {
             var role = await roleManager.FindByNameAsync(roleName);
@@ -32,16 +21,21 @@ namespace ITManagerProject.HelperTypes
             var allPermissions = permissions;
             foreach (var permission in allPermissions.Where(permission => !allClaims.Any(a => a.Type == "Permission" && a.Value == permission)))
             {
-                await roleManager.AddClaimAsync(role, new Claim("Permission", permission));
+                await roleManager.AddClaimAsync(role, new Claim(CustomClaimTypes.Permission, permission));
             }
         }
-    }
-
-    public static class UsersPermissions
-    {
-        public const string View = "Permissions.Users.View";
-        public const string Edit = "Permission.Users.Edit";
-        public const string Add = "Permissions.Users.Add";
-        public const string Remove = "Permissions.Users.Remove";
+        
+        public static class Users
+        {
+            public const string View = "Permissions.Users.View";
+            public const string Edit = "Permissions.Users.Edit";
+            public const string Add = "Permissions.Users.Add";
+            public const string Remove = "Permissions.Users.Remove";
+        }
+        
+        public static class Organization
+        {
+            public const string Remove = "Permissions.Organization.Remove";
+        }
     }
 }

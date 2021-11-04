@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using ITManagerProject.Contexts;
+using ITManagerProject.HelperTypes;
 using ITManagerProject.Managers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +16,7 @@ using ITManagerProject.Models;
 using ITManagerProject.Validators;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -44,13 +46,33 @@ namespace ITManagerProject
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("CanAddUsers", policy =>
+                options.AddPolicy(PolicyTypes.Users.Manage, policy =>
                 {
-                    policy.RequireClaim("Permission", "CanAddUsers");
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.View);
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.Add);
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.Remove);
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.Edit);
+                });
+                
+                options.AddPolicy(PolicyTypes.Users.View, policy =>
+                {
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.View);
+                });
+                
+                options.AddPolicy(PolicyTypes.Users.Edit, policy =>
+                {
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.Edit);
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.View);
+                });
+                
+                options.AddPolicy(PolicyTypes.Organization.Remove, policy =>
+                {
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Organization.Remove);
                 });
             });
             services.ConfigureApplicationCookie(options =>
             {
+                options.AccessDeniedPath = new PathString("/Dashboard/AccessDenied");
                 options.Events.OnValidatePrincipal = PrincipalValidator.ValidateAsync;
             });
 

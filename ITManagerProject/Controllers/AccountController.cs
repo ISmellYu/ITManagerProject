@@ -23,6 +23,7 @@ namespace ITManagerProject.Controllers
             SignInManager = signInManager;
             Logger = logger;
         }
+        
         public async Task<IActionResult> Register()
         {
             if (SignInManager.IsSignedIn(User))
@@ -34,6 +35,7 @@ namespace ITManagerProject.Controllers
         }
         
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel registerModel, string returnUrl = null)
         {
@@ -70,6 +72,7 @@ namespace ITManagerProject.Controllers
             }
             return View();
         }
+        
         [AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
@@ -111,6 +114,12 @@ namespace ITManagerProject.Controllers
         {
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
             return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize]
+        public IActionResult Overview()
+        {
+            return View();
         }
     }
 }

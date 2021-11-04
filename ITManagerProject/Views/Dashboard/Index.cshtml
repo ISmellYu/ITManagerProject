@@ -23,42 +23,50 @@
         <div>
             <div class="form-group pull-right">
                 <input type="text" class="search form-control" placeholder="Kogo szukasz?"/>
-            </div><span class="counter pull-right"></span>
+            </div>
+            <span class="counter pull-right"></span>
             <div class="form-group pull-left">
                 <a class="btn btn-success" data-toggle="modal" data-target="#exampleModal" type="button">
                     <i class="icon ion-android-add"></i>
                     Dodaj pracownika
                 </a>
             </div>
+            @* <div class="form-group text-center"> *@
+            @*     <a class="btn btn-danger" type="button" data-toggle="modal1" data-target="#exampleModal1"> *@
+            @*         <i class="icon ion-android-cancel"></i> *@
+            @*         Usun organizacje! *@
+            @*     </a> *@
+            @* </div> *@
             <!-- Modal -->
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel"><i class="icon ion-android-add"></i> Dodaj pracownika</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form method="post" asp-area="" asp-action="AddToOrganization" asp-controller="Dashboard">
-                        <div class="modal-body">
-                        <div class="mb-3">
-                            <label>Rola: </label>
-                            @Html.DropDownListFor(m => m.RoleId, Model.RolesList, "Wybierz", new {@class="Roles"})
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel"><i class="icon ion-android-add"></i> Dodaj pracownika</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                        <div class="mb-3">
-                            <label>Uzytkownik: </label>
-                            @Html.DropDownListFor(m => m.UserId, Model.UsersList, "Wybierz", new {@class="Users"})
-                        </div>
+                        <form method="post" asp-area="" asp-action="AddToOrganization" asp-controller="Dashboard">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label>Rola: </label>
+                                    @Html.DropDownListFor(m => m.RoleId, Model.RolesList, "Wybierz", new {@class="Roles"})
+                                </div>
+                                <div class="mb-3">
+                                    <label>Uzytkownik: </label>
+                                    @Html.DropDownListFor(m => m.UserId, Model.UsersList, "Wybierz", new {@class="Users"})
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                                <button type="submit" class="btn btn-primary">Dodaj</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
-                        <button type="submit" class="btn btn-primary">Dodaj</button>
-                    </div>
-                    </form>
                 </div>
-              </div>
             </div>
+            <!--Modal2 --->
             <table class="table table-hover table-bordered results">
                 <thead>
                 <tr>

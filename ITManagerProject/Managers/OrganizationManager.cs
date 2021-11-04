@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ITManagerProject.Contexts;
+using ITManagerProject.HelperTypes;
 using ITManagerProject.Models;
 using ITManagerProject.Models.Interfaces;
 using ITManagerProject.Stores.Interfaces;
@@ -76,6 +77,7 @@ namespace ITManagerProject.Managers
             var org = await GetOrganizationAsync(normalizedOrganizationName);
 
             _dbContext.UserOrganizations.Add(CreateUserOrganization(user, org));
+            //var alreadyInRole = await UserManager.IsInRoleAsync(user, role);
             if (role != null)
             {
                 await UserManager.AddToRoleAsync(user, role);
@@ -111,9 +113,9 @@ namespace ITManagerProject.Managers
             }
             else
             {
-                await UserManager.AddToRoleAsync(user, "CEO");
+                await UserManager.AddToRoleAsync(user, RoleTypesString.CEO);
             }
-            
+
             await _dbContext.SaveChangesAsync();
             
             return true;
@@ -195,7 +197,19 @@ namespace ITManagerProject.Managers
 
             return false;
         }
-        
+
+        public async Task<string> GetRoleForUser(User user)
+        {
+            ThrowIfDisposed();
+            var ifInOrg = await CheckIfInAnyOrganizationAsync(user);
+            if (!ifInOrg)
+                return null;
+
+            var roles = await UserManager.GetRolesAsync(user) as List<string>;
+            var role = roles?.FirstOrDefault();
+            return role;
+        }
+
         public async Task<bool> CheckIfInAnyOrganizationAsync(User user)
         {
             ThrowIfDisposed();
@@ -207,6 +221,8 @@ namespace ITManagerProject.Managers
         {
             ThrowIfDisposed();
             var userOrg = await UserOrganizations.FirstOrDefaultAsync(p => p.UserId == user.Id);
+            if (userOrg == null)
+                return null;
             return await Organizations.FirstOrDefaultAsync(p => p.Id == userOrg.OrganizationId);
         }
 
