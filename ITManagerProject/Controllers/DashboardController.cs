@@ -103,7 +103,6 @@ namespace ITManagerProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = PolicyTypes.Users.Manage)]
         public async Task<IActionResult> AddToOrganization(AddUserModel userModel, string returnUrl = null)
         {
             if (ModelState.IsValid)
@@ -113,17 +112,13 @@ namespace ITManagerProject.Controllers
                 var modUser = await _organizationManager.UserManager.FindByIdAsync(userModel.UserId);
                 
                 var alreadyIn = await _organizationManager.CheckIfInAnyOrganizationAsync(modUser);
-
-                var c = await _organizationManager.UserManager.GetClaimsAsync(currUser);
+                
                 if (alreadyIn)
                 {
                     ModelState.AddModelError(string.Empty, "Nie mozna dodac!");
                     return View("Index");
                 }
-
-                var rs = await _organizationManager.GetRoleForUser(currUser);
-                var roleObject = await _organizationManager.RoleManager.FindByNameAsync(rs);
-                var claimsBefore = await _organizationManager.RoleManager.GetClaimsAsync(roleObject) as List<Claim>;
+                
                 var role = await _organizationManager.RoleManager.FindByIdAsync(userModel.RoleId);
                 await _organizationManager.AddToOrganizationAsync(modUser,
                     await _organizationManager.GetOrganizationFromUserAsync(currUser), role.Name);
@@ -142,14 +137,6 @@ namespace ITManagerProject.Controllers
 
         public async Task<IActionResult> Test()
         {
-            await _organizationManager.RoleManager.SeedClaimsForRole("CEO", new List<string>()
-            {
-                Permissions.Users.Add,
-                Permissions.Users.Edit,
-                Permissions.Users.View,
-                Permissions.Users.Remove,
-
-            });
             return View();
         }
     }

@@ -81,6 +81,7 @@ namespace ITManagerProject
                 builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
             });
             
+            
             services.TryAddScoped<OrganizationManager<Organization>>();
             //services.AddAuthorization();
             services.AddLiveReload(config =>

@@ -1,11 +1,18 @@
 ﻿@using ITManagerProject.Managers
 @using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@using ITManagerProject.HelperTypes
 @inject OrganizationManager<Organization> _organizationManager;
 @inject UserManager<User> _userManager;
 @inject RoleManager<Role> _roleManager;
 @model ITManagerProject.ViewModels.AddUserModel
 @{
     ViewData["Title"] = "Dashboard";
+}
+
+@{
+    var user = await _organizationManager.UserManager.GetUserAsync(User);
+    var role = await _organizationManager.GetRoleForUser(user);
 }
 
 @{
@@ -25,12 +32,16 @@
                 <input type="text" class="search form-control" placeholder="Kogo szukasz?"/>
             </div>
             <span class="counter pull-right"></span>
-            <div class="form-group pull-left">
-                <a class="btn btn-success" data-toggle="modal" data-target="#exampleModal" type="button">
-                    <i class="icon ion-android-add"></i>
-                    Dodaj pracownika
-                </a>
-            </div>
+            @if (role == RoleTypesString.CEO)
+            {
+                <div class="form-group pull-left">
+                    <a class="btn btn-success" data-toggle="modal" data-target="#exampleModal" type="button">
+                        <i class="icon ion-android-add"></i>
+                        Dodaj pracownika
+                    </a>
+                </div>
+            }
+            
             @* <div class="form-group text-center"> *@
             @*     <a class="btn btn-danger" type="button" data-toggle="modal1" data-target="#exampleModal1"> *@
             @*         <i class="icon ion-android-cancel"></i> *@
