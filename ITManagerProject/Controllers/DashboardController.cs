@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -23,11 +24,15 @@ namespace ITManagerProject.Controllers
     {
         private readonly UserAppContext _dbContext;
         private readonly OrganizationManager<Organization> _organizationManager;
+        private readonly RoleManager<Role> _roleManager;
+        private readonly UserManager<User> _userManager;
         private readonly ILogger<DashboardController> _logger;
         private Organization _currentOrganization;
 
-        public DashboardController(UserAppContext dbContext, OrganizationManager<Organization> organizationManager, ILogger<DashboardController> logger)
+        public DashboardController(UserAppContext dbContext, OrganizationManager<Organization> organizationManager, RoleManager<Role> roleManager, UserManager<User> userManager, ILogger<DashboardController> logger)
         {
+            _userManager = userManager;
+            _roleManager = roleManager;
             _organizationManager = organizationManager;
             _logger = logger;
             _dbContext = dbContext;
@@ -137,6 +142,18 @@ namespace ITManagerProject.Controllers
 
         public async Task<IActionResult> Test()
         {
+            //await _organizationManager.RoleManager.SeedRoles(RoleTypesString.AllRolesAvailable);
+            var currUser = await _organizationManager.UserManager.GetUserAsync(User);
+            // await _userManager.AddToRoleAsync(currUser, RoleTypesString.CEO);
+            // await _userManager.AddClaimAsync(currUser, new Claim(ClaimTypes.Role, RoleTypesString.CEO));
+            // await _organizationManager.UserManager.AddToRoleAsync(currUser, RoleTypesString.CEO);
+            // Check if in role 
+            
+            // Get claims for user
+            var claims = User.Claims.ToList();
+            
+            // Seed roles
+            
             return View();
         }
     }

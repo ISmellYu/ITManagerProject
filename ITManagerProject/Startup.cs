@@ -48,10 +48,7 @@ namespace ITManagerProject
             {
                 options.AddPolicy(PolicyTypes.Users.Manage, policy =>
                 {
-                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.View);
-                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.Add);
-                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.Remove);
-                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.Edit);
+                    policy.RequireRole(RoleTypesString.CEO);
                 });
                 
                 options.AddPolicy(PolicyTypes.Users.View, policy =>
@@ -73,7 +70,7 @@ namespace ITManagerProject
             services.ConfigureApplicationCookie(options =>
             {
                 options.AccessDeniedPath = new PathString("/Dashboard/AccessDenied");
-                options.Events.OnValidatePrincipal = PrincipalValidator.ValidateAsync;
+                // options.Events.OnValidatePrincipal = PrincipalValidator.ValidateAsync;
             });
 
             services.AddDbContext<UserAppContext>(builder =>
@@ -93,6 +90,7 @@ namespace ITManagerProject
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddRazorPages();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

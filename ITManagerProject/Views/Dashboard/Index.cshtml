@@ -2,9 +2,12 @@
 @using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
 @using ITManagerProject.HelperTypes
+@using Microsoft.AspNetCore.Authorization
 @inject OrganizationManager<Organization> _organizationManager;
 @inject UserManager<User> _userManager;
 @inject RoleManager<Role> _roleManager;
+
+@inject IAuthorizationService _authorizationService
 @model ITManagerProject.ViewModels.AddUserModel
 @{
     ViewData["Title"] = "Dashboard";
@@ -13,6 +16,22 @@
 @{
     var user = await _organizationManager.UserManager.GetUserAsync(User);
     var role = await _organizationManager.GetRoleForUser(user);
+    
+    if ((await _authorizationService.AuthorizeAsync(User, PolicyTypes.Users.Edit)).Succeeded)
+    {
+        Console.WriteLine($"User can edit named {user.Email}");
+    }
+    
+    
+    if ((await _authorizationService.AuthorizeAsync(User, PolicyTypes.Users.Manage)).Succeeded)
+    {
+        Console.WriteLine($"User can manage named {user.Email}");
+    }
+    
+    if ((await _authorizationService.AuthorizeAsync(User, PolicyTypes.Users.View)).Succeeded)
+    {
+        Console.WriteLine($"User can view named {user.Email}");
+    }
 }
 
 @{

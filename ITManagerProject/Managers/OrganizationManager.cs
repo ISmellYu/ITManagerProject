@@ -84,7 +84,7 @@ namespace ITManagerProject.Managers
             }
             else
             {
-                await UserManager.AddToRoleAsync(user, "CEO");
+                await UserManager.AddToRoleAsync(user, RoleTypesString.CEO);
             }
             
             await _dbContext.SaveChangesAsync();
@@ -292,6 +292,33 @@ namespace ITManagerProject.Managers
             return UserOrganizations.Where(p => p.OrganizationId == org.Id).Select(organization => organization.UserId).ToList();
         }
 
+        // Get number of users in organization
+        public async Task<int> GetNumberOfUsersInOrganization(string organizationName)
+        {
+            ThrowIfDisposed();
+
+            if (string.IsNullOrWhiteSpace(organizationName))
+            {
+                throw new ArgumentException();
+            }
+
+            var normalizedName = Normalize(organizationName);
+            var exists = await CheckIfOrganizationExistsAsync(normalizedName);
+
+            if (!exists) return 0;
+
+            var org = await GetOrganizationAsync(normalizedName);
+
+            if (org != null)
+            {
+                var userIds = await GetUserIdsFromOrganization(org);
+                return userIds.Count;
+            }
+
+            return 0;
+        }
+        
+        
         private string Normalize(string txt)
         {
             return txt.ToUpper();
