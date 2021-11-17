@@ -4,6 +4,7 @@ using ITManagerProject.Models.Base;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace ITManagerProject.Contexts
 {
@@ -21,17 +22,19 @@ namespace ITManagerProject.Contexts
     {
         public RefactoredIdentityDbContext(DbContextOptions options) : base(options)
         {
-            
         }
         
         protected RefactoredIdentityDbContext() { }
         
+        public virtual string SchemaName { get; set; }
+
         public virtual DbSet<TOrganization> Organizations { get; set; }
         public virtual DbSet<TUserOrganization> UserOrganizations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.HasDefaultSchema("itmanagerbeta");
             
             builder.Entity<TUser>(b =>
             {

@@ -70,12 +70,12 @@ namespace ITManagerProject
             services.ConfigureApplicationCookie(options =>
             {
                 options.AccessDeniedPath = new PathString("/Dashboard/AccessDenied");
-                // options.Events.OnValidatePrincipal = PrincipalValidator.ValidateAsync;
+                options.Events.OnValidatePrincipal = PrincipalValidator.ValidateAsync;
             });
-
+            
             services.AddDbContext<UserAppContext>(builder =>
             {
-                builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+                builder.UseMySQL(Configuration.GetConnectionString("DefaultConnection"));
             });
             
             

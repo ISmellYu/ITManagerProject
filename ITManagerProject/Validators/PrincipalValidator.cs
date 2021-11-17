@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ITManagerProject.HelperTypes;
 using ITManagerProject.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -25,7 +26,6 @@ namespace ITManagerProject.Validators
                 return;
             }
             
-
             // Get an instance using DI
             var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<User>>();
             var user = await userManager.FindByIdAsync(userId);
@@ -34,6 +34,7 @@ namespace ITManagerProject.Validators
                 context.RejectPrincipal();
                 return;
             }
+            
         }
     }
 }

@@ -14,8 +14,8 @@
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.9" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.9" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.11" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.9" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.9" />
+        <PackageReference Include="MySql.EntityFrameworkCore" Version="5.0.8" />
         <PackageReference Include="PasswordGenerator" Version="2.0.5" />
         <PackageReference Include="RandomUserSharp" Version="2.0.1" />
         <PackageReference Include="Westwind.AspNetCore.LiveReload" Version="0.3.5" />

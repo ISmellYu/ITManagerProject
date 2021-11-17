@@ -26,11 +26,13 @@ namespace ITManagerProject.Controllers
         private readonly OrganizationManager<Organization> _organizationManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly ILogger<DashboardController> _logger;
         private Organization _currentOrganization;
 
-        public DashboardController(UserAppContext dbContext, OrganizationManager<Organization> organizationManager, RoleManager<Role> roleManager, UserManager<User> userManager, ILogger<DashboardController> logger)
+        public DashboardController(UserAppContext dbContext, OrganizationManager<Organization> organizationManager, RoleManager<Role> roleManager, UserManager<User> userManager, SignInManager<User> signInManager, ILogger<DashboardController> logger)
         {
+            _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
             _organizationManager = organizationManager;
@@ -72,6 +74,7 @@ namespace ITManagerProject.Controllers
             {
                 return RedirectToAction("Index");
             }
+            
             return View();
         }
 
@@ -99,20 +102,21 @@ namespace ITManagerProject.Controllers
                 
                 await _organizationManager.AddToOrganizationAsync(user, model.Name);
 
+                // Refreshing cookie to update claims/or smth
+                await HttpContext.RefreshLoginAsync();
+
                 return RedirectToAction("Index");
             }
             
             return View();
         }
         
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToOrganization(AddUserModel userModel, string returnUrl = null)
         {
             if (ModelState.IsValid)
             {
-                
                 var currUser = await _organizationManager.UserManager.GetUserAsync(User);
                 var modUser = await _organizationManager.UserManager.FindByIdAsync(userModel.UserId);
                 
@@ -128,32 +132,23 @@ namespace ITManagerProject.Controllers
                 await _organizationManager.AddToOrganizationAsync(modUser,
                     await _organizationManager.GetOrganizationFromUserAsync(currUser), role.Name);
 
-                return RedirectToAction("Index");
+                // Refreshing cookie to update claims/or smth
+                await HttpContext.RefreshLoginAsync();
+                
             }
 
             return RedirectToAction("Index");
         }
-        
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task RemoveOrganization()
+        {
+            
+        }
         
         public IActionResult AccessDenied(string returnUrl = null)
         {
-            return View();
-        }
-
-        public async Task<IActionResult> Test()
-        {
-            //await _organizationManager.RoleManager.SeedRoles(RoleTypesString.AllRolesAvailable);
-            var currUser = await _organizationManager.UserManager.GetUserAsync(User);
-            // await _userManager.AddToRoleAsync(currUser, RoleTypesString.CEO);
-            // await _userManager.AddClaimAsync(currUser, new Claim(ClaimTypes.Role, RoleTypesString.CEO));
-            // await _organizationManager.UserManager.AddToRoleAsync(currUser, RoleTypesString.CEO);
-            // Check if in role 
-            
-            // Get claims for user
-            var claims = User.Claims.ToList();
-            
-            // Seed roles
-            
             return View();
         }
     }

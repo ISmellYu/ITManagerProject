@@ -33,26 +33,6 @@ namespace ITManagerProject.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // var s = new List<string>()
-            // {
-            //     "CTO", "CIO", "Head of Product", "Product Manager", "VP of Marketing", "Director of Engineering",
-            //     "Chief Architect", "Software Architect", "Engineering Project Manager",
-            //     "Technical Lead", "Principal Software Engineer", "Senior Software Engineer", "Software Engineer",
-            //     "Software Developer", "Junior Software Developer", "Intern Software Developer"
-            // };
-            //
-            // foreach (var g in s)
-            // {
-            //     await _roleManager.CreateAsync(new Role(g));
-            // }
-            // await _organizationManager.RoleManager.SeedClaimsForRole("CEO", new List<string>()
-            // {
-            //     Permissions.Users.Add,
-            //     Permissions.Users.Edit,
-            //     Permissions.Users.View,
-            //     Permissions.Users.Remove,
-            //     Permissions.Organization.Remove
-            // });
             return View();
         }
 

@@ -1,6 +1,8 @@
-﻿using ITManagerProject.Models;
+﻿using System.Threading.Tasks;
+using ITManagerProject.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace ITManagerProject.Contexts
 {
@@ -14,15 +16,13 @@ namespace ITManagerProject.Contexts
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.Entity<User>().ToTable("Users", "dbo");
-            builder.Entity<Role>().ToTable("Roles", "dbo");
-            builder.Entity<UserClaim>().ToTable("UserClaims", "dbo");
-            builder.Entity<UserRole>().ToTable("UserRoles", "dbo");
-            builder.Entity<UserLogin>().ToTable("UserLogins", "dbo");
-            builder.Entity<RoleClaim>().ToTable("RoleClaims", "dbo");
-            builder.Entity<UserToken>().ToTable("UserTokens", "dbo");
-            
+            builder.Entity<User>().ToTable("Users");
+            builder.Entity<Role>().ToTable("Roles");
+            builder.Entity<UserClaim>().ToTable("UserClaims");
+            builder.Entity<UserRole>().ToTable("UserRoles");
+            builder.Entity<UserLogin>().ToTable("UserLogins");
+            builder.Entity<RoleClaim>().ToTable("RoleClaims");
+            builder.Entity<UserToken>().ToTable("UserTokens");
         }
     }
 
