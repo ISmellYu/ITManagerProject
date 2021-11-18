@@ -16,22 +16,6 @@
 @{
     var user = await _organizationManager.UserManager.GetUserAsync(User);
     var role = await _organizationManager.GetRoleForUser(user);
-    
-    if ((await _authorizationService.AuthorizeAsync(User, PolicyTypes.Users.Edit)).Succeeded)
-    {
-        Console.WriteLine($"User can edit named {user.Email}");
-    }
-    
-    
-    if ((await _authorizationService.AuthorizeAsync(User, PolicyTypes.Users.Manage)).Succeeded)
-    {
-        Console.WriteLine($"User can manage named {user.Email}");
-    }
-    
-    if ((await _authorizationService.AuthorizeAsync(User, PolicyTypes.Users.View)).Succeeded)
-    {
-        Console.WriteLine($"User can view named {user.Email}");
-    }
 }
 
 @{
@@ -51,12 +35,22 @@
                 <input type="text" class="search form-control" placeholder="Kogo szukasz?"/>
             </div>
             <span class="counter pull-right"></span>
-            @if (role == RoleTypesString.CEO)
+            @if ((await _authorizationService.AuthorizeAsync(User, PolicyTypes.Users.Manage)).Succeeded)
             {
                 <div class="form-group pull-left">
                     <a class="btn btn-success" data-toggle="modal" data-target="#exampleModal" type="button">
                         <i class="icon ion-android-add"></i>
                         Dodaj pracownika
+                    </a>
+                </div>
+            }
+            
+            @if ((await _authorizationService.AuthorizeAsync(User, PolicyTypes.Organization.Remove)).Succeeded)
+            {
+                <div class="form-group pull-left">
+                    <a class="btn btn-danger" type="button">
+                        <i class="icon ion-android-remove"></i>
+                        Usun pracownika
                     </a>
                 </div>
             }
@@ -112,7 +106,7 @@
                 <tbody>
                 @for (var i = 0; i < listOfUsers.Count; i++)
                 {
-                    <tr>
+                    <tr onclick="" style="cursor: pointer">
                         @{
                             var id = i + 1;
                             <th scope="row">@id</th>
@@ -147,7 +141,6 @@
         </div>
     }
 }
-
 @section Scripts
 {
     <script src="~/js/Table-with-search.js"></script>

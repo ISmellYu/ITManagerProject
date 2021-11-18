@@ -39,6 +39,7 @@ namespace ITManagerProject.Contexts
             builder.Entity<TUser>(b =>
             {
                 b.HasMany<TUserOrganization>().WithOne().HasForeignKey(u => u.UserId).IsRequired();
+                b.HasMany<RequestUser>().WithOne().HasForeignKey(u => u.UserId).IsRequired();
             });
             
             builder.Entity<TOrganization>(b =>
@@ -59,6 +60,12 @@ namespace ITManagerProject.Contexts
             {
                 b.HasKey(u => new { u.UserId, u.OrganizationId });
                 b.ToTable("UserOrganizations");
+            });
+
+            builder.Entity<RequestUser>(b =>
+            {
+                b.HasKey(u => u.UserId);
+                b.ToTable("RequestUsers");
             });
         }
     }
