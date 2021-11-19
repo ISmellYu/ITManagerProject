@@ -39,6 +39,7 @@ namespace ITManagerProject.Contexts
             builder.Entity<TUser>(b =>
             {
                 b.HasMany<TUserOrganization>().WithOne().HasForeignKey(u => u.UserId).IsRequired();
+                b.HasMany<OfferApplications>().WithOne().HasForeignKey(u => u.UserId).IsRequired();
             });
             
             builder.Entity<TOrganization>(b =>
@@ -53,12 +54,40 @@ namespace ITManagerProject.Contexts
                 b.Property(u => u.NormalizedName).HasMaxLength(256);
 
                 b.HasMany<TUserOrganization>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
+                b.HasMany<OrganizationOffers>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
                 
             });
             builder.Entity<TUserOrganization>(b =>
             {
                 b.HasKey(u => new { u.UserId, u.OrganizationId });
                 b.ToTable("UserOrganizations");
+            });
+
+            builder.Entity<Offer>(b =>
+            {
+                b.HasKey(u => u.Id);
+                b.HasMany<OrganizationOffers>().WithOne().HasForeignKey(u => u.OfferId).IsRequired();
+                b.HasMany<OfferApplications>().WithOne().HasForeignKey(u => u.OfferId).IsRequired();
+                b.ToTable("Offers");
+            });
+
+            builder.Entity<OrganizationOffers>(b =>
+            {
+                b.HasKey(u => new { u.OfferId, u.OrganizationId });
+                b.ToTable("OrganizationOffers");
+            });
+
+            builder.Entity<Application>(b =>
+            {
+                b.HasKey(u => u.Id);
+                b.HasMany<OfferApplications>().WithOne().HasForeignKey(u => u.ApplicationId).IsRequired();
+                b.ToTable("Applications");
+            });
+
+            builder.Entity<OfferApplications>(b =>
+            {
+                b.HasKey(u => new { u.ApplicationId, u.OfferId, u.UserId });
+                b.ToTable("OfferApplications");
             });
         }
     }

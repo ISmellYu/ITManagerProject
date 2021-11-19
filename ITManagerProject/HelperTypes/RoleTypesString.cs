@@ -21,13 +21,14 @@ namespace ITManagerProject.HelperTypes
         public static string SoftwareDeveloper = "Software Developer";
         public static string JuniorSoftwareDeveloper = "Junior Software Developer";
         public static string InternSoftwareDeveloper = "Intern Software Developer";
+        public static string Candidate = "Candidate";
 
         public static List<string> AllRolesAvailable = new()
         {
             CEO, CTO, CIO, HeadofProduct, ProductManager, VPofMarketing, DirectorofEngineering, ChiefArchitect,
             SoftwareArchitect, EngineeringProjectManager, TechnicalLead, PrincipalSoftwareEngineer,
             SeniorSoftwareEngineer, SoftwareEngineer, SoftwareDeveloper, JuniorSoftwareDeveloper, 
-            InternSoftwareDeveloper
+            InternSoftwareDeveloper, Candidate
         };
     }
 }

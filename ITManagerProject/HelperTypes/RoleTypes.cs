@@ -19,6 +19,6 @@
         SoftwareDeveloper,
         JuniorSoftwareDeveloper,
         InternSoftwareDeveloper,
-
+        Candidate
     }
 }
