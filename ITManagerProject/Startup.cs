@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
 using ITManagerProject.Contexts;
 using ITManagerProject.HelperTypes;
 using ITManagerProject.Managers;
@@ -48,7 +51,10 @@ namespace ITManagerProject
             {
                 options.AddPolicy(PolicyTypes.Users.Manage, policy =>
                 {
-                    policy.RequireRole(RoleTypesString.CEO);
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.Add);
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.Remove);
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.View);
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.Edit);
                 });
                 
                 options.AddPolicy(PolicyTypes.Users.View, policy =>
@@ -66,6 +72,7 @@ namespace ITManagerProject
                 {
                     policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Organization.Remove);
                 });
+                
             });
             services.ConfigureApplicationCookie(options =>
             {
