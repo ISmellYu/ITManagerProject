@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using ITManagerProject.Models;
 
 namespace ITManagerProject.HelperTypes
 {
@@ -30,5 +33,20 @@ namespace ITManagerProject.HelperTypes
             SeniorSoftwareEngineer, SoftwareEngineer, SoftwareDeveloper, JuniorSoftwareDeveloper, 
             InternSoftwareDeveloper, Candidate
         };
+
+        public static List<Role> GetAllRolesToBeSeeded()
+        {
+            var kl = new List<Role>();
+            for (int i = 0; i < AllRolesAvailable.Count; i++)
+            {
+                var rl = new Role(AllRolesAvailable[i]);
+                rl.Id = i + 1;
+                rl.NormalizedName = AllRolesAvailable[i].ToUpper();
+                rl.ConcurrencyStamp = Guid.NewGuid().ToString();
+                kl.Add(rl);
+            }
+            return kl;
+        }
+
     }
 }

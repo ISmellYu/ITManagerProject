@@ -41,6 +41,7 @@ namespace ITManagerProject
             services.AddIdentity<User, Role>(options =>
             {
                 options.User.RequireUniqueEmail = true;
+                options.Stores.MaxLengthForKeys = 85;
             }).AddEntityFrameworkStores<UserAppContext>().AddErrorDescriber<LocalizedIdentityErrorDescriber>();
             
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
@@ -84,6 +85,9 @@ namespace ITManagerProject
             
             
             services.TryAddScoped<OrganizationManager<Organization>>();
+            services.TryAddScoped<ApplicationManager>();
+            services.TryAddScoped<OfferManager>();
+            services.TryAddScoped<CompleteOfferManager>();
             //services.AddAuthorization();
             services.AddLiveReload(config =>
             {
@@ -94,7 +98,7 @@ namespace ITManagerProject
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddRazorPages();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -120,7 +124,7 @@ namespace ITManagerProject
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

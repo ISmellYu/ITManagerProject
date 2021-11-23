@@ -52,6 +52,51 @@ namespace ITManagerProject.HelperTypes
         public static class Organization
         {
             public const string Remove = "Permission.Organization.Remove";
+            public const string ManageApplications = "Permission.Organization.ManageApplications";
+        }
+
+        public static List<RoleClaim> GetSeedRoleClaims()
+        {
+            var kl = new List<RoleClaim>
+            {
+                new RoleClaim()
+                {
+                    Id = 1,
+                    RoleId = 1,
+                    ClaimType = CustomClaimTypes.Permission,
+                    ClaimValue = Users.Add
+                },
+                new RoleClaim()
+                {
+                    Id = 2,
+                    RoleId = 1,
+                    ClaimType = CustomClaimTypes.Permission,
+                    ClaimValue = Users.Edit
+                },
+                new RoleClaim()
+                {
+                    Id = 3,
+                    RoleId = 1,
+                    ClaimType = CustomClaimTypes.Permission,
+                    ClaimValue = Users.Remove
+                },
+                new RoleClaim()
+                {
+                    Id = 4,
+                    RoleId = 1,
+                    ClaimType = CustomClaimTypes.Permission,
+                    ClaimValue = Users.View
+                },
+                new RoleClaim()
+                {
+                    Id = 5,
+                    RoleId = 1,
+                    ClaimType = CustomClaimTypes.Permission,
+                    ClaimValue = Organization.Remove
+                }
+            };
+
+            return kl;
         }
     }
 }

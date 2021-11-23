@@ -30,6 +30,12 @@ namespace ITManagerProject.Contexts
 
         public virtual DbSet<TOrganization> Organizations { get; set; }
         public virtual DbSet<TUserOrganization> UserOrganizations { get; set; }
+        public virtual DbSet<Offer> Offers { get; set; }
+        public virtual DbSet<Application> Applications { get; set; }
+        public virtual DbSet<OrganizationOffer> OrganizationOffers { get; set; }
+        
+        public virtual DbSet<OfferApplication> OfferApplications { get; set; }
+        public virtual DbSet<UserCookieRenew> UserCookieRenews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -39,7 +45,8 @@ namespace ITManagerProject.Contexts
             builder.Entity<TUser>(b =>
             {
                 b.HasMany<TUserOrganization>().WithOne().HasForeignKey(u => u.UserId).IsRequired();
-                b.HasMany<OfferApplications>().WithOne().HasForeignKey(u => u.UserId).IsRequired();
+                b.HasMany<OfferApplication>().WithOne().HasForeignKey(u => u.UserId).IsRequired();
+                b.HasMany<UserCookieRenew>().WithOne().HasForeignKey(u => u.UserId).IsRequired();
             });
             
             builder.Entity<TOrganization>(b =>
@@ -54,7 +61,7 @@ namespace ITManagerProject.Contexts
                 b.Property(u => u.NormalizedName).HasMaxLength(256);
 
                 b.HasMany<TUserOrganization>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
-                b.HasMany<OrganizationOffers>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
+                b.HasMany<OrganizationOffer>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
                 
             });
             builder.Entity<TUserOrganization>(b =>
@@ -66,12 +73,12 @@ namespace ITManagerProject.Contexts
             builder.Entity<Offer>(b =>
             {
                 b.HasKey(u => u.Id);
-                b.HasMany<OrganizationOffers>().WithOne().HasForeignKey(u => u.OfferId).IsRequired();
-                b.HasMany<OfferApplications>().WithOne().HasForeignKey(u => u.OfferId).IsRequired();
+                b.HasMany<OrganizationOffer>().WithOne().HasForeignKey(u => u.OfferId).IsRequired();
+                b.HasMany<OfferApplication>().WithOne().HasForeignKey(u => u.OfferId).IsRequired();
                 b.ToTable("Offers");
             });
 
-            builder.Entity<OrganizationOffers>(b =>
+            builder.Entity<OrganizationOffer>(b =>
             {
                 b.HasKey(u => new { u.OfferId, u.OrganizationId });
                 b.ToTable("OrganizationOffers");
@@ -80,15 +87,22 @@ namespace ITManagerProject.Contexts
             builder.Entity<Application>(b =>
             {
                 b.HasKey(u => u.Id);
-                b.HasMany<OfferApplications>().WithOne().HasForeignKey(u => u.ApplicationId).IsRequired();
+                b.HasMany<OfferApplication>().WithOne().HasForeignKey(u => u.ApplicationId).IsRequired();
                 b.ToTable("Applications");
             });
 
-            builder.Entity<OfferApplications>(b =>
+            builder.Entity<OfferApplication>(b =>
             {
                 b.HasKey(u => new { u.ApplicationId, u.OfferId, u.UserId });
                 b.ToTable("OfferApplications");
             });
+            
+            builder.Entity<UserCookieRenew>(b =>
+            {
+                b.HasKey(u => u.UserId);
+                b.ToTable("UserCookieRenew");
+            });
+            
         }
     }
 }

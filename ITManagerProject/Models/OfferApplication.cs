@@ -1,6 +1,6 @@
 ﻿namespace ITManagerProject.Models
 {
-    public class OfferApplications
+    public class OfferApplication
     {
         public int ApplicationId { get; set; }
         public int OfferId { get; set; }

@@ -12,6 +12,8 @@
         public static class Organization
         {
             public const string Remove = "Organization.Remove.Policy";
+            public const string ManageApplications = "Organization.ManageApplications.Policy";
+            
         }
     }
 }

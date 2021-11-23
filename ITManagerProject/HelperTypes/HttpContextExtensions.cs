@@ -27,5 +27,7 @@ namespace ITManagerProject.HelperTypes
                 await signInManager.RefreshSignInAsync(user);
             }
         }
+        
+        
     }
 }
