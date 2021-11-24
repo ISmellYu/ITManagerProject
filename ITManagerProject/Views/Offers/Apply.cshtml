@@ -1,5 +1,20 @@
 ﻿@model ITManagerProject.ViewModels.ApplyViewModel
-
 @{
     ViewData["Title"] = "Aplikuj";
 }
+
+
+<div class="text-center">
+    <h1>Aplikujesz wlasnie na stanowisko @Model.Offer.Role w @Model.Offer.Company</h1>
+</div>
+<form method="post" asp-action="Apply" asp-controller="Offers">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <input class="form-control" type="text" name="Cv" placeholder="CV" asp-for="ApplicationViewModel.Cv"/>
+        <span asp-validation-for="ApplicationViewModel.Cv" class="text-danger"></span>
+    </div>
+    
+    <div class="mb-3">
+        <button class="btn btn-primary d-block w-100" type="submit">Wyslij!</button>
+    </div>
+</form>

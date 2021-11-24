@@ -4,8 +4,7 @@ namespace ITManagerProject.ViewModels
 {
     public class ApplyViewModel
     {
-        public Organization Organization { get; set; }
         public Offer Offer { get; set; }
-        public Application Application { get; set; }
+        public ApplicationViewModel ApplicationViewModel { get; set; }
     }
 }

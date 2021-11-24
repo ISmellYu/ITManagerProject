@@ -6,7 +6,7 @@ namespace ITManagerProject.Managers
     {
         public readonly ApplicationManager _applicationManager;
         public readonly OfferManager _offerManager;
-        
+
         private bool _disposed = false;
         public CompleteOfferManager(ApplicationManager applicationManager, OfferManager offerManager)
         {

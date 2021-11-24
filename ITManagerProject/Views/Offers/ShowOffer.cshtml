@@ -3,4 +3,38 @@
     ViewData["Title"] = "";
 }
 
-<h1>@Model.Company</h1>
+
+<div class="job">
+    <div class="text-center">
+        <h1 style="font-size: 100px">@Model.Name</h1>
+    </div>
+
+    <div class="description">
+        <h1 style="font-size: 50px">Opis</h1>
+        <br>
+        <p>@Model.Description</p>
+    </div>
+    <ul class="d-md-flex flex-wrap text-capitalize ff-open-sans" style="list-style: none">
+        <li class="mr-md-4">
+            <i class="zmdi zmdi-pin mr-2"></i> @Model.Location
+        </li>
+        <li class="mr-md-4">
+            <i class="zmdi zmdi-money mr-2"></i> @Model.Salary
+        </li>
+        <li class="mr-md-4">
+            <i class="zmdi zmdi-time mr-2"></i> Full Time
+        </li>
+    
+        <li class="mr-md-4">
+            <i class="zmdi ion-ios-people-outline"></i> @Model.Company
+        </li>
+    
+        <li class="mr-md-4">
+            <i class="zmdi ion-android-person-add"></i> @Model.Role
+        </li>
+    </ul>
+    
+    <div class="text-center">
+        <a class="btn btn-success" asp-action="Apply" asp-route-id="@Model.Id">Aplikuj teraz!</a>
+    </div>
+</div>

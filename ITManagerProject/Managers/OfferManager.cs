@@ -19,8 +19,9 @@ namespace ITManagerProject.Managers
         
         private bool _disposed = false;
 
-        public OfferManager(UserAppContext context)
+        public OfferManager(UserAppContext context, OrganizationManager<Organization> organizationManager)
         {
+            _organizationManager = organizationManager;
             _context = context;
         }
         
