@@ -89,6 +89,14 @@ namespace ITManagerProject.Managers
 
             return await Offers.AnyAsync(p => p.Id == offer.Id);
         }
+        
+        public async Task<Organization> GetOrganizationByOffer(Offer offer)
+        {
+            ThrowIfDisposed();
+
+            var orgOffer = await OrganizationOffers.FirstOrDefaultAsync(p => p.OfferId == offer.Id);
+            return await _organizationManager.GetOrganizationAsync(orgOffer.OrganizationId);
+        }
 
 
         public OrganizationOffer CreateOrganizationOffer(Organization organization, Offer offer)

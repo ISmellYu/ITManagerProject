@@ -225,6 +225,13 @@ namespace ITManagerProject.Managers
                 return null;
             return await Organizations.FirstOrDefaultAsync(p => p.Id == userOrg.OrganizationId);
         }
+        
+        public async Task<Organization> GetOrganizationAsync(int orgId)
+        {
+            ThrowIfDisposed();
+            var org = await Organizations.FirstOrDefaultAsync(p => p.Id == orgId);
+            return org;
+        }
 
         private async Task<Organization> GetOrganizationAsync(string normalizedName)
         {
