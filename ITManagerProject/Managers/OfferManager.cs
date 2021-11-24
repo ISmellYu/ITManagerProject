@@ -29,6 +29,7 @@ namespace ITManagerProject.Managers
             ThrowIfDisposed();
             
             _context.Offers.Add(offer);
+            await _context.SaveChangesAsync();
             _context.OrganizationOffers.Add(new OrganizationOffer()
             {
                 OfferId = offer.Id,
