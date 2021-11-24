@@ -19,7 +19,6 @@ namespace ITManagerProject.Controllers
         // GET
         public IActionResult Index()
         {
-            xd = "hahga";
             return View();
         }
         
