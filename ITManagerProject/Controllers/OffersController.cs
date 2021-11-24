@@ -11,7 +11,6 @@ namespace ITManagerProject.Controllers
     public class OffersController : Controller
     {
         private readonly OfferManager _offerManager;
-        private string xd;
 
         public OffersController(OfferManager offerManager)
         {
