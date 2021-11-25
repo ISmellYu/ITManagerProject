@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using ITManagerProject.HelperTypes;
+using ITManagerProject.Models;
 
 namespace ITManagerProject.Managers
 {
@@ -6,14 +9,15 @@ namespace ITManagerProject.Managers
     {
         public readonly ApplicationManager _applicationManager;
         public readonly OfferManager _offerManager;
+        public readonly OrganizationManager<Organization> _organizationManager;
 
         private bool _disposed = false;
-        public CompleteOfferManager(ApplicationManager applicationManager, OfferManager offerManager)
+        public CompleteOfferManager(ApplicationManager applicationManager, OfferManager offerManager, OrganizationManager<Organization> organizationManager)
         {
+            _organizationManager = organizationManager;
             _applicationManager = applicationManager;
             _offerManager = offerManager;
         }
-        
         
         public void Dispose()
         {

@@ -47,6 +47,10 @@ namespace ITManagerProject.Controllers
                     Email = registerModel.Email,
                     FirstName = registerModel.FirstName,
                     LastName = registerModel.LastName,
+                    Country = registerModel.Country,
+                    City = registerModel.City,
+                    Address = registerModel.Address,
+                    PostCode = registerModel.PostalCode,
                     EmailConfirmed = true,
                     PhoneNumberConfirmed = true
                 };
@@ -121,5 +125,6 @@ namespace ITManagerProject.Controllers
         {
             return View();
         }
+        
     }
 }

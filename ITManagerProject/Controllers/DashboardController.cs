@@ -27,11 +27,16 @@ namespace ITManagerProject.Controllers
         private readonly RoleManager<Role> _roleManager;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly ApplicationManager _applicationManager;
+        private readonly OfferManager _offerManager;
         private readonly ILogger<DashboardController> _logger;
-        private Organization _currentOrganization;
 
-        public DashboardController(UserAppContext dbContext, OrganizationManager<Organization> organizationManager, RoleManager<Role> roleManager, UserManager<User> userManager, SignInManager<User> signInManager, ILogger<DashboardController> logger)
+        public DashboardController(UserAppContext dbContext, OrganizationManager<Organization> organizationManager, 
+            RoleManager<Role> roleManager, UserManager<User> userManager, SignInManager<User> signInManager, 
+            ILogger<DashboardController> logger, ApplicationManager applicationManager, OfferManager offerManager)
         {
+            _applicationManager = applicationManager;
+            _offerManager = offerManager;
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
@@ -142,11 +147,61 @@ namespace ITManagerProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveFromOrganization()
+        {
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = PolicyTypes.Users.Edit)]
         public async Task RemoveOrganization()
         {
-            
+            // TODO: verify if can remove
+            return;
         }
-        
+
+        [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
+        public async Task<bool> AddOffer()
+        {
+            // TODO: verify if can add offer
+            return false;
+        }
+
+        [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
+        public async Task<bool> RemoveOffer()
+        {
+            // TODO: verify if can reject
+            return false;
+        }
+
+        [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
+        public async Task<bool> AcceptApplication()
+        {
+            // TODO: verify if can accept
+            return false;
+        }
+
+        [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
+        public async Task<bool> RejectApplication()
+        {
+            // TODO: verify if can reject
+            return false;
+        }
+
+        [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
+        public async Task<IActionResult> Offers()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var offers =
+                await _offerManager.GetOffersByOrganization(await _organizationManager.GetOrganizationFromUserAsync(user));
+            var viewModel = new OffersViewModel()
+            {
+                Offers = offers
+            };
+            return View(viewModel);
+        }
+
         public IActionResult AccessDenied(string returnUrl = null)
         {
             return View();

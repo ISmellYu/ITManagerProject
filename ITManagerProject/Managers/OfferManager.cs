@@ -13,7 +13,6 @@ namespace ITManagerProject.Managers
         private readonly UserAppContext _context;
         private readonly OrganizationManager<Organization> _organizationManager;
         
-
         private IQueryable<Offer> Offers => _context.Offers.AsQueryable();
         private IQueryable<OrganizationOffer> OrganizationOffers => _context.OrganizationOffers.AsQueryable();
         

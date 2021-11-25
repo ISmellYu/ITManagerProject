@@ -26,5 +26,24 @@ namespace ITManagerProject.ViewModels
         [Display(Name = "Nazwisko")]
         public string LastName { get; set; }
         
+        [Required(ErrorMessage = "Panstwo nie moze byc puste!")]
+        [DataType(DataType.Text)]
+        [Display(Name = "Panstwo")]
+        public string Country { get; set; }
+        
+        [Required(ErrorMessage = "Miasto nie moze byc puste!")]
+        [DataType(DataType.Text)]
+        [Display(Name = "Miasto")]
+        public string City { get; set; }
+        
+        [Required(ErrorMessage = "Adres nie moze byc pusty!")]
+        [DataType(DataType.Text)]
+        [Display(Name = "Adres")]
+        public string Address { get; set; }
+        
+        [Required(ErrorMessage = "Kod pocztowy nie moze byc puste!")]
+        [DataType(DataType.PostalCode)]
+        [Display(Name = "Kod pocztowy")]
+        public string PostalCode { get; set; }
     }
 }

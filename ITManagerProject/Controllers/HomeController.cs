@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using ITManagerProject.Contexts;
 using ITManagerProject.HelperTypes;
 using ITManagerProject.Managers;
 using Microsoft.AspNetCore.Mvc;
@@ -21,9 +22,11 @@ namespace ITManagerProject.Controllers
         private readonly OrganizationManager<Organization> _organizationManager;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
+        private readonly UserAppContext _context;
 
-        public HomeController(ILogger<HomeController> logger, SignInManager<User> signInManager, OrganizationManager<Organization> organizationManager, UserManager<User> userManager, RoleManager<Role> roleManager)
+        public HomeController(ILogger<HomeController> logger, SignInManager<User> signInManager, OrganizationManager<Organization> organizationManager, UserManager<User> userManager, RoleManager<Role> roleManager, UserAppContext context)
         {
+            _context = context;
             _roleManager = roleManager;
             _userManager = userManager;
             _organizationManager = organizationManager;
