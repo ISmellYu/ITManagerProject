@@ -118,6 +118,7 @@ namespace ITManagerProject.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [InOrganization]
         public async Task<IActionResult> AddToOrganization(AddUserModel userModel, string returnUrl = null)
         {
             if (ModelState.IsValid)
@@ -147,21 +148,32 @@ namespace ITManagerProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoveFromOrganization()
+        [InOrganization]
+        public async Task<IActionResult> RemoveFromOrganization(int id, string returnUrl = null)
         {
+            var user = await _organizationManager.UserManager.GetUserAsync(User);
+            var modUser = await _organizationManager.UserManager.FindByIdAsync(id.ToString());
+            await _organizationManager.RemoveFromOrganizationAsync(modUser,
+                (await _organizationManager.GetOrganizationFromUserAsync(user)).Name);
+
+            // Refreshing cookie to update claims/or smth
+            await HttpContext.RefreshLoginAsync();
+
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Policy = PolicyTypes.Users.Edit)]
-        public async Task RemoveOrganization()
+        [Authorize(Policy = PolicyTypes.Organization.Remove)]
+        [InOrganization]
+        public async Task<IActionResult> RemoveOrganization()
         {
-            // TODO: verify if can remove
-            return;
+            var user = await _organizationManager.UserManager.GetUserAsync(User);
+            var organization = await _organizationManager.GetOrganizationFromUserAsync(user);
+            await _organizationManager.RemoveAsync(organization.Name);
+            return RedirectToAction("Index");
         }
 
         [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
+        [InOrganization]
         public async Task<bool> AddOffer()
         {
             // TODO: verify if can add offer
@@ -169,6 +181,7 @@ namespace ITManagerProject.Controllers
         }
 
         [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
+        [InOrganization]
         public async Task<bool> RemoveOffer()
         {
             // TODO: verify if can reject
@@ -176,6 +189,7 @@ namespace ITManagerProject.Controllers
         }
 
         [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
+        [InOrganization]
         public async Task<bool> AcceptApplication()
         {
             // TODO: verify if can accept
@@ -183,6 +197,7 @@ namespace ITManagerProject.Controllers
         }
 
         [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
+        [InOrganization]
         public async Task<bool> RejectApplication()
         {
             // TODO: verify if can reject
@@ -190,6 +205,7 @@ namespace ITManagerProject.Controllers
         }
 
         [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
+        [InOrganization]
         public async Task<IActionResult> Offers()
         {
             var user = await _userManager.GetUserAsync(User);
