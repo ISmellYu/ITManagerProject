@@ -1,0 +1,17 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    var usr = await UserManager.GetUserAsync(User);
+    <li class="nav-item">
+        <a class="nav-link">Projekty</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-action="Offers" asp-controller="Dashboard">Oferty</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-action="Applications" asp-controller="Dashboard">Aplikacje</a>
+    </li>
+}
