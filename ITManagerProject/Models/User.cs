@@ -14,5 +14,6 @@ namespace ITManagerProject.Models
         public string City { get; set; }
         public string Country { get; set; }
         public string PostCode { get; set; }
+        public int Salary { get; set; }
     }
 }

@@ -146,6 +146,9 @@ namespace ITManagerProject.Managers
                     {
                         _dbContext.UserOrganizations.Remove(userOrg);
                         await _dbContext.SaveChangesAsync();
+                        await UserManager.RemoveFromRoleAsync(user, (await UserManager.GetRolesAsync(user))[0]);
+                        user.Salary = 0;
+                        await UserManager.UpdateAsync(user);
                         return true;
                     }
                 }
@@ -242,13 +245,13 @@ namespace ITManagerProject.Managers
         private async Task<UserOrganization> GetUserOrganizationAsync(int userId, int orgId)
         {
             ThrowIfDisposed();
-            return await _dbContext.UserOrganizations.FindAsync(new object[userId, orgId]).AsTask();
+            return await _dbContext.UserOrganizations.FindAsync(userId, orgId).AsTask();
         }
         
         private async Task<UserOrganization> GetUserOrganizationAsync(User user, Organization org)
         {
             ThrowIfDisposed();
-            return await _dbContext.UserOrganizations.FindAsync(new object[user.Id, org.Id]).AsTask();
+            return await _dbContext.UserOrganizations.FindAsync(user.Id, org.Id).AsTask();
         }
 
         public async Task<List<UserOrganizationViewModel>> GetAllUsersFromOrganizationAsync(string organizationName)

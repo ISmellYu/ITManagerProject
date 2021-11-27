@@ -146,20 +146,92 @@ namespace ITManagerProject.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        [Authorize(Policy = PolicyTypes.Users.Edit)]
+        [InOrganization]
+        public async Task<IActionResult> EditEmployee(string id)
+        {
+            var currUser = await _organizationManager.UserManager.GetUserAsync(User);
+            var modUser = await _organizationManager.UserManager.FindByIdAsync(id.ToString());
+
+            var orgcurrUser = await _organizationManager.GetOrganizationFromUserAsync(currUser);
+            var orgmodUser = await _organizationManager.GetOrganizationFromUserAsync(modUser);
+            if (orgcurrUser != orgmodUser || currUser == modUser)
+            {
+                return RedirectToAction("Index");
+            }
+
+
+            var model = new EditViewModel();
+            model.User = modUser;
+            var allRoles = _organizationManager.RoleManager.Roles.ToList();
+            model.Roles = allRoles.Select(p => new SelectListItem()
+            {
+                Value = p.Id.ToString(),
+                Text = p.Name
+            });
+            
+            return View(model);
+        }
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = PolicyTypes.Users.Edit)]
         [InOrganization]
-        public async Task<IActionResult> RemoveFromOrganization(int id, string returnUrl = null)
+        public async Task<IActionResult> EditEmployee(string id, string roleId)
         {
-            var user = await _organizationManager.UserManager.GetUserAsync(User);
-            var modUser = await _organizationManager.UserManager.FindByIdAsync(id.ToString());
-            await _organizationManager.RemoveFromOrganizationAsync(modUser,
-                (await _organizationManager.GetOrganizationFromUserAsync(user)).Name);
+            if (ModelState.IsValid)
+            {
+                var currUser = await _organizationManager.UserManager.GetUserAsync(User);
+                var modUser = await _organizationManager.UserManager.FindByIdAsync(id);
 
-            // Refreshing cookie to update claims/or smth
-            await HttpContext.RefreshLoginAsync();
+                if (await _organizationManager.GetOrganizationFromUserAsync(currUser) !=
+                    await _organizationManager.GetOrganizationFromUserAsync(modUser) ||
+                    currUser == modUser)
+                {
+                    return RedirectToAction("Index");
+                }
 
-            return RedirectToAction("Index");
+                var role = await _organizationManager.RoleManager.FindByIdAsync(roleId);
+                var currRole = (await _organizationManager.UserManager.GetRolesAsync(modUser))[0];
+                await _organizationManager.UserManager.RemoveFromRoleAsync(modUser, currRole);
+                await _organizationManager.UserManager.AddToRoleAsync(modUser, role.Name);
+
+                // Refreshing cookie to update claims/or smth
+                await HttpContext.RefreshLoginAsync();
+                
+                return RedirectToAction("Index");
+            }
+
+            return View();
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = PolicyTypes.Users.Edit)]
+        [InOrganization]
+        public async Task<IActionResult> DeleteEmployee(string id)
+        {
+            if (ModelState.IsValid)
+            {
+                var currUser = await _organizationManager.UserManager.GetUserAsync(User);
+                var modUser = await _organizationManager.UserManager.FindByIdAsync(id);
+                var org = await _organizationManager.GetOrganizationFromUserAsync(modUser);
+
+                if (await _organizationManager.GetOrganizationFromUserAsync(currUser) != org ||
+                    currUser == modUser)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                await _organizationManager.RemoveFromOrganizationAsync(modUser, org.Name);
+                // Refreshing cookie to update claims/or smth
+                await HttpContext.RefreshLoginAsync();
+                
+                return RedirectToAction("Index");
+            }
+
+            return RedirectToAction("EditEmployee", new {id = id});
         }
 
         [Authorize(Policy = PolicyTypes.Organization.Remove)]
@@ -174,15 +246,27 @@ namespace ITManagerProject.Controllers
 
         [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
         [InOrganization]
-        public async Task<bool> AddOffer()
+        public async Task<IActionResult> AddOffer()
         {
-            // TODO: verify if can add offer
-            return false;
+            return View();
         }
 
+        [HttpPost]
         [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
         [InOrganization]
-        public async Task<bool> RemoveOffer()
+        public async Task<IActionResult> AddOffer(AddOfferViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
+        [InOrganization]
+        public async Task<bool> RemoveOffer(string id)
         {
             // TODO: verify if can reject
             return false;
@@ -190,7 +274,7 @@ namespace ITManagerProject.Controllers
 
         [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
         [InOrganization]
-        public async Task<bool> AcceptApplication()
+        public async Task<bool> AcceptApplication(string id)
         {
             // TODO: verify if can accept
             return false;
@@ -198,7 +282,7 @@ namespace ITManagerProject.Controllers
 
         [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
         [InOrganization]
-        public async Task<bool> RejectApplication()
+        public async Task<bool> RejectApplication(string id)
         {
             // TODO: verify if can reject
             return false;
@@ -214,6 +298,27 @@ namespace ITManagerProject.Controllers
             var viewModel = new OffersViewModel()
             {
                 Offers = offers
+            };
+            return View(viewModel);
+        }
+        
+        [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
+        [InOrganization]
+        public async Task<IActionResult> Applications()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var org = await _organizationManager.GetOrganizationFromUserAsync(user);
+            var offers = await _offerManager.GetOffersByOrganizationId(org.Id);
+            var applications = new List<Application>();
+            foreach (var offer in offers)
+            {
+                var apps = await _applicationManager.GetAllApplicationsByOfferId(offer.Id);
+                applications.AddRange(apps);
+            }
+            
+            var viewModel = new ApplicationsViewModel()
+            {
+                Applications = applications
             };
             return View(viewModel);
         }

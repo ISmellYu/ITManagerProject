@@ -11,14 +11,18 @@ namespace ITManagerProject.Managers
     public class ApplicationManager : IDisposable
     {
         private readonly UserAppContext _context;
-        
+        private readonly OrganizationManager<Organization> _organizationManager;
+        private readonly OfferManager _offerManager;
+
         private IQueryable<Application> _applications => _context.Applications.AsQueryable();
         private IQueryable<OfferApplication> _offerApplications => _context.OfferApplications.AsQueryable();
         
         private bool _disposed = false;
-        public ApplicationManager(UserAppContext context)
+        public ApplicationManager(UserAppContext context, OrganizationManager<Organization> organizationManager, OfferManager offerManager)
         {
             _context = context;
+            _organizationManager = organizationManager;
+            _offerManager = offerManager;
         }
 
         public async Task<bool> AddApplication(Application application, int offerId, int userId)
@@ -95,12 +99,25 @@ namespace ITManagerProject.Managers
             var ids = _offerApplications.Where(p => p.UserId == userId).Select(p => p.ApplicationId).ToList();
             return await _applications.Where(p => ids.Contains(p.Id)).ToListAsync();
         }
+        
+        public async Task<List<Application>> GetApplicationsByOrganizationId(int organizationId)
+        {
+            ThrowIfDisposed();
+            var offers = await _offerManager.GetOffersByOrganizationId(organizationId);
+            var ids = _offerApplications.Where(
+                p => offers.Any(x => x.Id == p.OfferId))
+                .Select(p => p.ApplicationId).ToList();
+            var applications = await _applications.Where(p => ids.Contains(p.Id)).ToListAsync();
+            return applications;
+        }
 
         public async Task<Application> GetApplicationById(int id)
         {
             ThrowIfDisposed();
             return await _applications.FirstOrDefaultAsync(p => p.Id == id);
         }
+        
+        
 
         
         public void Dispose()

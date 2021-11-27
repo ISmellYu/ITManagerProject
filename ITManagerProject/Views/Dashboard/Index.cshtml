@@ -54,14 +54,6 @@
                     </a>
                 </div>
             }
-            
-            @* <div class="form-group text-center"> *@
-            @*     <a class="btn btn-danger" type="button" data-toggle="modal1" data-target="#exampleModal1"> *@
-            @*         <i class="icon ion-android-cancel"></i> *@
-            @*         Usun organizacje! *@
-            @*     </a> *@
-            @* </div> *@
-            <!-- Modal -->
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -91,39 +83,56 @@
                 </div>
             </div>
             <!--Modal2 --->
-            <table class="table table-hover table-bordered results">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th class="col-md-5 col-xs-5">Imie i Nazwisko</th>
-                    <th class="col-md-4 col-xs-4">Role</th>
-                    <th class="col-md-3 col-xs-3">Email</th>
-                </tr>
-                <tr class="warning no-result">
-                    <td colspan="4"><i class="fa fa-warning"></i> Nie ma wynikow</td>
-                </tr>
-                </thead>
-                <tbody>
-                @for (var i = 0; i < listOfUsers.Count; i++)
-                {
-                    <tr onclick="" style="cursor: pointer">
-                        @{
-                            var id = i + 1;
-                            <th scope="row">@id</th>
-                        }
-                        <td>
-                            @listOfUsers[i].User.FirstName @listOfUsers[i].User.LastName
-                        </td>
-                        <td>
-                            @string.Join(", ", listOfUsers[i].Roles)
-                        </td>
-                        <td>
-                            @listOfUsers[i].User.Email
-                        </td>
+            @if ((await _authorizationService.AuthorizeAsync(User, PolicyTypes.Users.View)).Succeeded)
+            {
+                <table class="table table-hover table-bordered results">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th class="col-md-auto col-xs-5">Imie i Nazwisko</th>
+                        <th class="col-md-auto col-xs-4">Role</th>
+                        <th class="col-md-auto col-xs-3">Email</th>
+                        <th class="col-md-auto col-xs-2">Panstwo</th>
+                        <th class="col-md-auto col-xs-1">Miasto</th>
+                        <th class="col-md-auto col-xs-1">Adres</th>
                     </tr>
-                }
-                </tbody>
-            </table>
+                    <tr class="warning no-result">
+                        <td colspan="4"><i class="fa fa-warning"></i> Nie ma wynikow</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for (var i = 0; i < listOfUsers.Count; i++)
+                    {
+                        <tr onclick="location.href = '@(@Url.Action("EditEmployee", "Dashboard", new {id = listOfUsers[i].User.Id}))'" style="cursor: pointer" >
+                            @{
+                                var id = i + 1;
+                                <th scope="row">@id</th>
+                            }
+                            <td>
+                                @listOfUsers[i].User.FirstName @listOfUsers[i].User.LastName
+                            </td>
+                            <td>
+                                @string.Join(", ", listOfUsers[i].Roles)
+                            </td>
+                            <td>
+                                @listOfUsers[i].User.Email
+                            </td>
+                            <td>
+                                @listOfUsers[i].User.Country
+                            </td>
+                            <td>
+                                @listOfUsers[i].User.City
+                            </td>
+                            <td>
+                                @listOfUsers[i].User.Address
+                            </td>
+                            
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+            
         </div>
     }
     else

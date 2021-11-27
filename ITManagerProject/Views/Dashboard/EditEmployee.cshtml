@@ -1,0 +1,27 @@
+﻿@model ITManagerProject.ViewModels.EditViewModel
+@{
+    ViewData["Title"] = "Aplikuj";
+}
+
+
+<div class="text-center">
+    <h1>Edytujesz wlasnie uzytkownika @Model.User.FirstName @Model.User.LastName</h1>
+</div>
+<form method="post" asp-action="EditEmployee" asp-controller="Dashboard">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label>Rola: </label>
+        @Html.DropDownListFor(m => m.RoleId, Model.Roles, "Wybierz", new {@class="Roles"})
+    </div>
+    
+    <div class="mb-3">
+        <button class="btn btn-primary d-block w-100" type="submit">Zapisz!</button>
+    </div>
+</form>
+
+<form method="post" asp-action="DeleteEmployee" asp-controller="Dashboard" asp-route-id="@Model.User.Id">
+    <div class="mb-3">
+        <button class="btn btn-danger d-block w-100" type="submit">Usun z organizacji!</button>
+    </div>
+</form>
+

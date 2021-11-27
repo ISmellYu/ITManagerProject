@@ -8,4 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ITManagerProject.HelperTypes
 {
+    public static class UserManagerExtensions
+    {
+    }
 }

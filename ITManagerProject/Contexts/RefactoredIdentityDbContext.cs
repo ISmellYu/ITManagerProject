@@ -103,6 +103,7 @@ namespace ITManagerProject.Contexts
                 b.ToTable("UserCookieRenew");
             });
             
+            
         }
     }
 }

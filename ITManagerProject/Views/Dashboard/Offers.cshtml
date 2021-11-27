@@ -1,2 +1,13 @@
-﻿
+﻿@model ITManagerProject.ViewModels.OffersViewModel
+@{
+    ViewBag.Title = "Oferty";
+}
+
+<div class="container-fluid">
+    @foreach (var offer in Model.Offers)
+    {
+        <div>@offer.</div>
+    }
+</div>
+
 

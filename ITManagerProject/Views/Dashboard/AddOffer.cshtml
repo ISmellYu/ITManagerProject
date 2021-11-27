@@ -1,0 +1,28 @@
+﻿@model ITManagerProject.ViewModels.AddOfferViewModel
+
+@{
+    ViewData["Title"] = "Dodaj oferte";
+}
+
+
+<!-- Make form for adding offer -->
+<form method="post" asp-controller="Dashboard" asp-action="AddOffer">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <input type="text" class="form-control" id="offerName" name="offerName" placeholder="Nazwa oferty" value="@(Model.Name)" asp-for="Name"/>
+    </div>
+    <div class="form-group">
+        <textarea class="form-control" id="offerDescription" name="offerDescription" placeholder="Opis oferty" asp-for="Description">@(Model.Description)</textarea>
+    </div>
+    <div class="form-group">
+        <input type="text" class="form-control" id="offerLocation" name="offerLocation" placeholder="Lokalizacja" value="@(Model.Location)" asp-for="Location"/>
+    </div>
+    <div class="form-group">
+        <input type="text" class="form-control" id="offerRole" name="offerRole" placeholder="Rola" value="@(Model.Role)" asp-for="Role"/>
+    </div>
+</form>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+}
