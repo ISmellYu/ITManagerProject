@@ -93,6 +93,13 @@ namespace ITManagerProject.HelperTypes
                     RoleId = 1,
                     ClaimType = CustomClaimTypes.Permission,
                     ClaimValue = Organization.Remove
+                },
+                new RoleClaim()
+                {
+                    Id = 6,
+                    RoleId = 1,
+                    ClaimType = CustomClaimTypes.Permission,
+                    ClaimValue = Organization.ManageApplications
                 }
             };
 

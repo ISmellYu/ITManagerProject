@@ -14,8 +14,8 @@ namespace ITManagerProject.Managers
         private readonly OrganizationManager<Organization> _organizationManager;
         private readonly OfferManager _offerManager;
 
-        private IQueryable<Application> _applications => _context.Applications.AsQueryable();
-        private IQueryable<OfferApplication> _offerApplications => _context.OfferApplications.AsQueryable();
+        private IQueryable<Application> _applications => _context.Applications.AsQueryable().AsNoTracking();
+        private IQueryable<OfferApplication> _offerApplications => _context.OfferApplications.AsQueryable().AsNoTracking();
         
         private bool _disposed = false;
         public ApplicationManager(UserAppContext context, OrganizationManager<Organization> organizationManager, OfferManager offerManager)
@@ -46,7 +46,7 @@ namespace ITManagerProject.Managers
             return true;
         }
         
-        public async Task<bool> RemoveApplication(Application application, int offerId, int userId)
+        public async Task<bool> RemoveApplication(Application application, int offerId)
         {
             ThrowIfDisposed();
             if (!(await CheckIfApplicationExists(application)))
@@ -56,9 +56,26 @@ namespace ITManagerProject.Managers
             
             _context.Applications.Remove(application);
             await _context.SaveChangesAsync();
-            var offerApplication = await _offerApplications.FirstOrDefaultAsync(oa => oa.OfferId == offerId && oa.ApplicationId == application.Id);
-            _context.OfferApplications.Remove(offerApplication);
-            await _context.SaveChangesAsync();
+            // var offerApplication = await _offerApplications.FirstOrDefaultAsync(oa => oa.OfferId == offerId && oa.ApplicationId == application.Id);
+            // _context.OfferApplications.Remove(offerApplication);
+            // await _context.SaveChangesAsync();
+            return true;
+        }
+        
+        public async Task<bool> AcceptApplication(Application application, int offerId, int userId)
+        {
+            ThrowIfDisposed();
+            if (!(await CheckIfApplicationExists(application)))
+            {
+                return false;
+            }
+
+            var organization = await _offerManager.GetOrganizationByOffer(new Offer() { Id = offerId });
+            var user = await _organizationManager.UserManager.FindByIdAsync(userId.ToString());
+            var offer = await _offerManager.GetOfferById(offerId);
+            await _organizationManager.AddToOrganizationAsync(user, organization, offer.Salary, offer.Role);
+            await _organizationManager.ChangeSalary(user, offer.Salary);
+            await RemoveApplication(application, offerId);
             return true;
         }
 
@@ -117,9 +134,26 @@ namespace ITManagerProject.Managers
             return await _applications.FirstOrDefaultAsync(p => p.Id == id);
         }
         
+        public async Task<Application> GetApplicationById(string id)
+        {
+            ThrowIfDisposed();
+            return await _applications.FirstOrDefaultAsync(p => p.Id == Convert.ToInt32(id));
+        }
         
+        public async Task<User> GetUserByApplicationId(int applicationId)
+        {
+            ThrowIfDisposed();
+            var offerApplication = await _offerApplications.FirstOrDefaultAsync(p => p.ApplicationId == applicationId);
+            return await _organizationManager.UserManager.FindByIdAsync(offerApplication.UserId.ToString());
+        }
+        
+        public async Task<Offer> GetOfferByApplicationId(int applicationId)
+        {
+            ThrowIfDisposed();
+            var offerApplication = await _offerApplications.FirstOrDefaultAsync(p => p.ApplicationId == applicationId);
+            return await _offerManager.GetOfferById(offerApplication.OfferId);
+        }
 
-        
         public void Dispose()
         {
             Dispose(true);

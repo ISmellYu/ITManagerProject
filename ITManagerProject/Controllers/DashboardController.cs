@@ -45,7 +45,16 @@ namespace ITManagerProject.Controllers
             _dbContext = dbContext;
         }
         
+        
+        [InOrganization]
         public async Task<IActionResult> Index()
+        {
+            return View();
+        }
+
+        [Authorize(Policy = PolicyTypes.Users.View)]
+        [InOrganization]
+        public async Task<IActionResult> Employees()
         {
             var v = new AddUserModel();
             var allRoles = _organizationManager.RoleManager.Roles.ToList();
@@ -135,15 +144,16 @@ namespace ITManagerProject.Controllers
                 }
                 
                 var role = await _organizationManager.RoleManager.FindByIdAsync(userModel.RoleId);
-                await _organizationManager.AddToOrganizationAsync(modUser,
-                    await _organizationManager.GetOrganizationFromUserAsync(currUser), role.Name);
+                var currOrg = await _organizationManager.GetOrganizationFromUserAsync(currUser);
+                await _organizationManager.AddToOrganizationAsync(modUser, currOrg, userModel.Salary, role.Name);
+                
 
                 // Refreshing cookie to update claims/or smth
                 await HttpContext.RefreshLoginAsync();
                 
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Employees");
         }
 
         [HttpGet]
@@ -156,20 +166,23 @@ namespace ITManagerProject.Controllers
 
             var orgcurrUser = await _organizationManager.GetOrganizationFromUserAsync(currUser);
             var orgmodUser = await _organizationManager.GetOrganizationFromUserAsync(modUser);
-            if (orgcurrUser != orgmodUser || currUser == modUser)
+            if (orgcurrUser.Id != orgmodUser.Id || currUser == modUser)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Employees");
             }
 
 
             var model = new EditViewModel();
             model.User = modUser;
             var allRoles = _organizationManager.RoleManager.Roles.ToList();
+            var rl = (await _userManager.GetRolesAsync(modUser))[0];
             model.Roles = allRoles.Select(p => new SelectListItem()
             {
                 Value = p.Id.ToString(),
-                Text = p.Name
+                Text = p.Name,
+                Selected = rl == p.Name
             });
+            model.Salary = modUser.Salary;
             
             return View(model);
         }
@@ -178,29 +191,36 @@ namespace ITManagerProject.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Policy = PolicyTypes.Users.Edit)]
         [InOrganization]
-        public async Task<IActionResult> EditEmployee(string id, string roleId)
+        public async Task<IActionResult> EditEmployee(string id, string roleId, int salary) // Edit employee with specified id, roleid and salary
         {
             if (ModelState.IsValid)
             {
-                var currUser = await _organizationManager.UserManager.GetUserAsync(User);
-                var modUser = await _organizationManager.UserManager.FindByIdAsync(id);
+                var currUser = await _organizationManager.UserManager.GetUserAsync(User);   // Get current user
+                var modUser = await _organizationManager.UserManager.FindByIdAsync(id); // Get user to edit
 
-                if (await _organizationManager.GetOrganizationFromUserAsync(currUser) !=
-                    await _organizationManager.GetOrganizationFromUserAsync(modUser) ||
+                if ((await _organizationManager.GetOrganizationFromUserAsync(currUser)).Id !=
+                    (await _organizationManager.GetOrganizationFromUserAsync(modUser)).Id ||
                     currUser == modUser)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Employees");
+                }
+
+                if (roleId == null)
+                {
+                    return RedirectToAction("Employees");
                 }
 
                 var role = await _organizationManager.RoleManager.FindByIdAsync(roleId);
-                var currRole = (await _organizationManager.UserManager.GetRolesAsync(modUser))[0];
-                await _organizationManager.UserManager.RemoveFromRoleAsync(modUser, currRole);
+                await _organizationManager.UserManager.RemoveFromRolesAsync(modUser,
+                    await _organizationManager.UserManager.GetRolesAsync(modUser));
                 await _organizationManager.UserManager.AddToRoleAsync(modUser, role.Name);
+                await _organizationManager.ChangeSalary(modUser, salary);   // Change salary
+                
 
                 // Refreshing cookie to update claims/or smth
-                await HttpContext.RefreshLoginAsync();
+                await HttpContext.RefreshLoginAsync();  // 
                 
-                return RedirectToAction("Index");
+                return RedirectToAction("Employees");
             }
 
             return View();
@@ -221,14 +241,14 @@ namespace ITManagerProject.Controllers
                 if (await _organizationManager.GetOrganizationFromUserAsync(currUser) != org ||
                     currUser == modUser)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Employees");
                 }
 
                 await _organizationManager.RemoveFromOrganizationAsync(modUser, org.Name);
                 // Refreshing cookie to update claims/or smth
                 await HttpContext.RefreshLoginAsync();
                 
-                return RedirectToAction("Index");
+                return RedirectToAction("Employees");
             }
 
             return RedirectToAction("EditEmployee", new {id = id});
@@ -248,7 +268,14 @@ namespace ITManagerProject.Controllers
         [InOrganization]
         public async Task<IActionResult> AddOffer()
         {
-            return View();
+            var f = new AddOfferViewModel();
+            var allRoles = _organizationManager.RoleManager.Roles.ToList();
+            f.Roles = allRoles.Select(p => new SelectListItem()
+            {
+                Value = p.Id.ToString(),
+                Text = p.Name
+            });
+            return View(f);
         }
 
         [HttpPost]
@@ -258,34 +285,110 @@ namespace ITManagerProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                
+                var user = await _organizationManager.UserManager.GetUserAsync(User);
+                var organization = await _organizationManager.GetOrganizationFromUserAsync(user);
+                var role = await _organizationManager.RoleManager.FindByIdAsync(model.RoleId);
+                var allOffers = await _offerManager.GetOffersByOrganization(organization);
+                if (allOffers.Any(p => p.Name == model.Name && p.Description == model.Description && 
+                                       p.Company == organization.Name && p.Role == role.Name && 
+                                       p.Salary == model.Salary))
+                {
+                    ModelState.AddModelError("", "Oferta juz istnieje!");
+                }
+
+                _offerManager.AddOffer(new Offer()
+                {
+                    Company = organization.Name,
+                    Description = model.Description,
+                    Location = model.Location,
+                    Name = model.Name,
+                    Role = role.Name,
+                    Salary = model.Salary
+                }, organization.Id);
+                return RedirectToAction("Offers");
             }
-            return RedirectToAction("Index");
+            
+            return RedirectToAction("Offers");
         }
-
-        [HttpPost]
+        
         [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
         [InOrganization]
-        public async Task<bool> RemoveOffer(string id)
+        public async Task<IActionResult> RemoveOffer(int id)
         {
-            // TODO: verify if can reject
-            return false;
+            var user = await _organizationManager.UserManager.GetUserAsync(User);
+            var organization = await _organizationManager.GetOrganizationFromUserAsync(user);
+            var offer = await _offerManager.GetOfferById(id);
+            if (offer == null)
+            {
+                return RedirectToAction("Offers");
+            }
+            if (offer.Company == organization.Name)
+            {
+                _offerManager.DeleteOffer(offer);
+                return RedirectToAction("Offers");
+
+            }
+
+            return RedirectToAction("Offers");
         }
 
         [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
         [InOrganization]
-        public async Task<bool> AcceptApplication(string id)
+        public async Task<IActionResult> AcceptApplication(string id)
         {
-            // TODO: verify if can accept
-            return false;
+            var user = await _organizationManager.UserManager.GetUserAsync(User);
+            var organization = await _organizationManager.GetOrganizationFromUserAsync(user);
+            var application = await _applicationManager.GetApplicationById(id);
+            if (application == null)
+            {
+                return RedirectToAction("Applications");
+            }
+
+            var x = await _applicationManager.GetOfferByApplicationId(Convert.ToInt32(id));
+            if (x == null)
+            {
+                return RedirectToAction("Applications");
+            }
+
+            var appUser = await _applicationManager.GetUserByApplicationId(Convert.ToInt32(id));
+            
+            if (x.Company == organization.Name)
+            {
+                await _applicationManager.AcceptApplication(new Application() { Id = Convert.ToInt32(id) }, x.Id,
+                    appUser.Id);
+                return RedirectToAction("Applications");
+            }
+            return RedirectToAction("Applications");
         }
 
         [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
         [InOrganization]
-        public async Task<bool> RejectApplication(string id)
+        public async Task<IActionResult> RejectApplication(string id)
         {
-            // TODO: verify if can reject
-            return false;
+            var user = await _organizationManager.UserManager.GetUserAsync(User);
+            var organization = await _organizationManager.GetOrganizationFromUserAsync(user);
+            var application = await _applicationManager.GetApplicationById(id);
+            if (application == null)
+            {
+                return RedirectToAction("Applications");
+            }
+
+            var x = await _applicationManager.GetOfferByApplicationId(Convert.ToInt32(id));
+            if (x == null)
+            {
+                return RedirectToAction("Applications");
+            }
+            
+            
+            if (x.Company == organization.Name)
+            {
+                await _applicationManager.RemoveApplication(new Application()
+                {
+                    Id = Convert.ToInt32(id),
+                }, x.Id);
+                return RedirectToAction("Applications");
+            }
+            return RedirectToAction("Applications");
         }
 
         [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
@@ -309,11 +412,19 @@ namespace ITManagerProject.Controllers
             var user = await _userManager.GetUserAsync(User);
             var org = await _organizationManager.GetOrganizationFromUserAsync(user);
             var offers = await _offerManager.GetOffersByOrganizationId(org.Id);
-            var applications = new List<Application>();
+            var applications = new List<ApplicationWithDetails>();
             foreach (var offer in offers)
             {
                 var apps = await _applicationManager.GetAllApplicationsByOfferId(offer.Id);
-                applications.AddRange(apps);
+                foreach (var app in apps)
+                {
+                    applications.Add(new ApplicationWithDetails()
+                    {
+                        Application = app,
+                        Offer = offer,
+                        User = await _applicationManager.GetUserByApplicationId(app.Id)
+                    });
+                }
             }
             
             var viewModel = new ApplicationsViewModel()
@@ -322,6 +433,25 @@ namespace ITManagerProject.Controllers
             };
             return View(viewModel);
         }
+
+        [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
+        [InOrganization]
+        public async Task<IActionResult> ShowApplication(string id)
+        {
+            var applicationWithDetails = new ApplicationWithDetails();
+            var application = await _applicationManager.GetApplicationById(id);
+            var offer = await _applicationManager.GetOfferByApplicationId(application.Id);
+            var user = await _applicationManager.GetUserByApplicationId(application.Id);
+            applicationWithDetails.Application = application;
+            applicationWithDetails.Offer = offer;
+            applicationWithDetails.User = user;
+            var viewmodel = new ApplicationWithDetailsModel()
+            {
+                ApplicationWithDetails = applicationWithDetails
+            };
+            return View(viewmodel);
+        }
+        
 
         public IActionResult AccessDenied(string returnUrl = null)
         {

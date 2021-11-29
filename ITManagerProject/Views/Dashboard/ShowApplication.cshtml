@@ -1,0 +1,11 @@
+﻿@model ITManagerProject.ViewModels.ApplicationWithDetailsModel
+@{
+    ViewData["Title"] = "Aplikacja";
+}
+
+<!-- Show cv -->
+
+<a asp-action="AcceptApplication" asp-route-id="@Model.ApplicationWithDetails.Application.Id" class="btn btn-success">Akceptuj</a>
+<a asp-action="RejectApplication" asp-route-id="@Model.ApplicationWithDetails.Application.Id" class="btn btn-danger">Usun</a>
+
+

@@ -16,7 +16,7 @@ namespace ITManagerProject.HelperTypes
             // The example uses base class, IdentityUser, yours may be called 
             // ApplicationUser if you have added any extra fields to the model
             var userManager = context.RequestServices
-                .GetRequiredService<UserManager<User>>();
+                .GetRequiredService<UserManager<User>>();   // Get the user manager from DI
             var signInManager = context.RequestServices
                 .GetRequiredService<SignInManager<User>>();
 

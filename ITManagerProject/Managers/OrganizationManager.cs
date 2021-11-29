@@ -18,8 +18,8 @@ namespace ITManagerProject.Managers
     public class OrganizationManager<TOrganization> : IDisposable where TOrganization : class
     {
         private readonly UserAppContext _dbContext;
-        private IQueryable<Organization> Organizations => _dbContext.Organizations.AsQueryable();
-        private IQueryable<UserOrganization> UserOrganizations => _dbContext.UserOrganizations.AsQueryable();
+        private IQueryable<Organization> Organizations => _dbContext.Organizations.AsQueryable().AsNoTracking();
+        private IQueryable<UserOrganization> UserOrganizations => _dbContext.UserOrganizations.AsQueryable().AsNoTracking();
         public readonly UserManager<User> UserManager;
         public readonly RoleManager<Role> RoleManager;
         
@@ -61,7 +61,7 @@ namespace ITManagerProject.Managers
             return true;
         }
         
-        public async Task<bool> AddToOrganizationAsync(User user, string organizationName, string role = null)
+        public async Task<bool> AddToOrganizationAsync(User user, string organizationName, int salary = 0, string role = null)
         {
             ThrowIfDisposed();
             
@@ -81,6 +81,7 @@ namespace ITManagerProject.Managers
             if (role != null)
             {
                 await UserManager.AddToRoleAsync(user, role);
+                await UserManager.ChangeSalary(user, salary);
             }
             else
             {
@@ -92,7 +93,7 @@ namespace ITManagerProject.Managers
             return true;
         }
         
-        public async Task<bool> AddToOrganizationAsync(User user, Organization organization, string role = null)
+        public async Task<bool> AddToOrganizationAsync(User user, Organization organization, int salary = 0, string role = null)
         {
             ThrowIfDisposed();
 
@@ -110,6 +111,7 @@ namespace ITManagerProject.Managers
             if (role != null)
             {
                 await UserManager.AddToRoleAsync(user, role);
+                await UserManager.ChangeSalary(user, salary);
             }
             else
             {
@@ -154,6 +156,13 @@ namespace ITManagerProject.Managers
                 }
             }
             return false;
+        }
+
+        public async Task<bool> ChangeSalary(User user, int salary)
+        {
+            ThrowIfDisposed();
+
+            return await UserManager.ChangeSalary(user, salary);
         }
 
         public async Task<bool> CheckIfOrganizationExistsAsync(string organizationName)

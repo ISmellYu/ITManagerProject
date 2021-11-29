@@ -1,0 +1,163 @@
+﻿@using ITManagerProject.Managers
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@using ITManagerProject.HelperTypes
+@using Microsoft.AspNetCore.Authorization
+@inject OrganizationManager<Organization> _organizationManager;
+@inject UserManager<User> _userManager;
+@inject RoleManager<Role> _roleManager;
+
+@inject IAuthorizationService _authorizationService
+@model ITManagerProject.ViewModels.AddUserModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+@{
+    var user = await _organizationManager.UserManager.GetUserAsync(User);
+    var role = await _organizationManager.GetRoleForUser(user);
+}
+
+@{
+    var usr = await _userManager.GetUserAsync(User);
+    if (await _organizationManager.CheckIfInAnyOrganizationAsync(usr))
+    {
+        var org = await _organizationManager.GetOrganizationFromUserAsync(usr);
+        var listOfUsers = await _organizationManager.GetAllUsersFromOrganizationAsync(org.Name);
+        <div class="text-center">
+            <h1 style="font-size: 70px">Witaj!</h1>
+        </div>
+        <div class="text-center">
+            <h1>Znajdujesz sie w organizacji o nazwie: @org.Name</h1>
+        </div>
+        <div>
+            <div class="form-group pull-right">
+                <input type="text" class="search form-control" placeholder="Kogo szukasz?"/>
+            </div>
+            <span class="counter pull-right"></span>
+            @if ((await _authorizationService.AuthorizeAsync(User, PolicyTypes.Users.Manage)).Succeeded)
+            {
+                <div class="form-group pull-left">
+                    <a class="btn btn-success" data-toggle="modal" data-target="#exampleModal" type="button">
+                        <i class="icon ion-android-add"></i>
+                        Dodaj pracownika
+                    </a>
+                </div>
+            }
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel"><i class="icon ion-android-add"></i> Dodaj pracownika</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form method="post" asp-area="" asp-action="AddToOrganization" asp-controller="Dashboard">
+                            <div class="modal-body">
+                                <div></div>
+                                <div class="mb-3">
+                                    <label>Rola: </label>
+                                    @Html.DropDownListFor(m => m.RoleId, Model.RolesList, new { @class = "Roles" })
+                                </div>
+                                <div class="mb-3">
+                                    <label>Uzytkownik: </label>
+                                    @Html.DropDownListFor(m => m.UserId, Model.UsersList, new { @class = "Users" })
+                                </div>
+                                <div class="mb-3">
+                                    <label>Placa: </label>
+                                    @Html.TextBoxFor(m => m.Salary)
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                                <button type="submit" class="btn btn-primary">Dodaj</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            @if ((await _authorizationService.AuthorizeAsync(User, PolicyTypes.Users.View)).Succeeded)
+            {
+                <table class="table table-hover table-bordered results">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th class="col-md-auto col-xs-5">Imie i Nazwisko</th>
+                        <th class="col-md-auto col-xs-4">Role</th>
+                        <th class="col-md-auto col-xs-3">Email</th>
+                        <th class="col-md-auto col-xs-2">Panstwo</th>
+                        <th class="col-md-auto col-xs-1">Miasto</th>
+                        <th class="col-md-auto col-xs-1">Adres</th>
+                        <th class="col-md-auto col-xs-1">Płaca</th>
+                    </tr>
+                    <tr class="warning no-result">
+                        <td colspan="4"><i class="fa fa-warning"></i> Nie ma wynikow</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for (var i = 0; i < listOfUsers.Count; i++)
+                    {
+                        <tr onclick="location.href = '@(@Url.Action("EditEmployee", "Dashboard", new {id = listOfUsers[i].User.Id}))'" style="cursor: pointer" >
+                            @{
+                                var id = i + 1;
+                                <th scope="row">@id</th>
+                            }
+                            <td>
+                                @listOfUsers[i].User.FirstName @listOfUsers[i].User.LastName
+                            </td>
+                            <td>
+                                @string.Join(", ", listOfUsers[i].Roles)
+                            </td>
+                            <td>
+                                @listOfUsers[i].User.Email
+                            </td>
+                            <td>
+                                @listOfUsers[i].User.Country
+                            </td>
+                            <td>
+                                @listOfUsers[i].User.City
+                            </td>
+                            <td>
+                                @listOfUsers[i].User.Address
+                            </td>
+                            <td>
+                                @listOfUsers[i].User.Salary
+                                </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+            
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <h1 style="font-size: 70px">Witaj!</h1>
+        </div>
+        <div class="text-center">
+            <h1>Obecnie nie znajdujesz sie w zadnej organizacji,<br/> 
+                popros swojego pracodawce o dodanie do organizacji,<br/>
+                lub jezeli jestes pracodawca zaloz organizacje!</h1>
+        </div>
+        <div class="text-center d-xxl-flex justify-content-xxl-center">
+            <a class="btn btn-success btn-lg" type="button" asp-area="" asp-controller="Dashboard" asp-action="CreateOrganization">Zaloz organizacje</a>
+        </div>
+    }
+}
+@section Scripts
+{
+    <script src="~/js/Table-with-search.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $(".Roles").chosen();
+            $(".Users").chosen();
+          
+        })
+    </script>
+    
+    <partial name="_ValidationScriptsPartial"/>
+}

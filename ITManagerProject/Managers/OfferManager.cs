@@ -13,8 +13,8 @@ namespace ITManagerProject.Managers
         private readonly UserAppContext _context;
         private readonly OrganizationManager<Organization> _organizationManager;
         
-        private IQueryable<Offer> Offers => _context.Offers.AsQueryable();
-        private IQueryable<OrganizationOffer> OrganizationOffers => _context.OrganizationOffers.AsQueryable();
+        private IQueryable<Offer> Offers => _context.Offers.AsQueryable().AsNoTracking();
+        private IQueryable<OrganizationOffer> OrganizationOffers => _context.OrganizationOffers.AsQueryable().AsNoTracking();
         
         private bool _disposed = false;
 
@@ -66,6 +66,13 @@ namespace ITManagerProject.Managers
             ThrowIfDisposed();
 
             return await Offers.FirstOrDefaultAsync(p => p.Id == id);
+        }
+        
+        public async Task<Offer> GetOfferById(string id)
+        {
+            ThrowIfDisposed();
+
+            return await Offers.FirstOrDefaultAsync(p => p.Id == Convert.ToInt32(id));
         }
 
         public async Task<List<Offer>> GetOffersByOrganization(Organization org)

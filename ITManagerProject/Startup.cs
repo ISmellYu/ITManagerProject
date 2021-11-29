@@ -71,6 +71,13 @@ namespace ITManagerProject
                     policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Organization.Remove);
                 });
                 
+                options.AddPolicy(PolicyTypes.Organization.ManageApplications, policy =>
+                {
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Organization.ManageApplications);
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.View);
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.Add);
+                });
+                
             });
             services.ConfigureApplicationCookie(options =>
             {
@@ -81,6 +88,7 @@ namespace ITManagerProject
             services.AddDbContext<UserAppContext>(builder =>
             {
                 builder.UseMySQL(Configuration.GetConnectionString("DefaultConnection"));
+                builder.EnableSensitiveDataLogging();
             });
             
             

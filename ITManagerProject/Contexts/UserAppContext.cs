@@ -12,7 +12,7 @@ namespace ITManagerProject.Contexts
     {
         public UserAppContext(DbContextOptions<UserAppContext> options) : base(options)
         {
-            
+
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
