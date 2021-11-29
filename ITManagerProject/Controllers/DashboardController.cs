@@ -226,19 +226,17 @@ namespace ITManagerProject.Controllers
             return View();
         }
         
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         [Authorize(Policy = PolicyTypes.Users.Edit)]
         [InOrganization]
-        public async Task<IActionResult> DeleteEmployee(string id)
+        public async Task<IActionResult> DeleteEmployee(int id)
         {
             if (ModelState.IsValid)
             {
                 var currUser = await _organizationManager.UserManager.GetUserAsync(User);
-                var modUser = await _organizationManager.UserManager.FindByIdAsync(id);
+                var modUser = await _organizationManager.UserManager.FindByIdAsync(id.ToString());
                 var org = await _organizationManager.GetOrganizationFromUserAsync(modUser);
 
-                if (await _organizationManager.GetOrganizationFromUserAsync(currUser) != org ||
+                if ((await _organizationManager.GetOrganizationFromUserAsync(currUser)).Id != org.Id ||
                     currUser == modUser)
                 {
                     return RedirectToAction("Employees");
@@ -251,7 +249,7 @@ namespace ITManagerProject.Controllers
                 return RedirectToAction("Employees");
             }
 
-            return RedirectToAction("EditEmployee", new {id = id});
+            return RedirectToAction("EditEmployee", new {id = id.ToString()});
         }
 
         [Authorize(Policy = PolicyTypes.Organization.Remove)]

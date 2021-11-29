@@ -21,6 +21,7 @@
         <button class="btn btn-primary d-block w-100" type="submit">Zapisz!</button>
     </div>
 </form>
+<a class="btn btn-danger d-block w-100" asp-action="DeleteEmployee" asp-route-id="@Model.User.Id">Usun!</a>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>
