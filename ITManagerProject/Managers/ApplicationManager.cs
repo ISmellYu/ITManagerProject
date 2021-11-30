@@ -74,7 +74,7 @@ namespace ITManagerProject.Managers
             var user = await _organizationManager.UserManager.FindByIdAsync(userId.ToString());
             var offer = await _offerManager.GetOfferById(offerId);
             await _organizationManager.AddToOrganizationAsync(user, organization, offer.Salary, offer.Role);
-            await _organizationManager.ChangeSalary(user, offer.Salary);
+            //await _organizationManager.ChangeSalary(user, offer.Salary);
             await RemoveApplication(application, offerId);
             return true;
         }

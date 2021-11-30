@@ -36,10 +36,20 @@ namespace ITManagerProject.HelperTypes
         public override async void OnActionExecuting(ActionExecutingContext context)
         {
             var user = await _userManager.GetUserAsync(context.HttpContext.User);
-            if ((await _organizationManager.CheckIfInAnyOrganizationAsync(user)))
+            var status = await _organizationManager.CheckIfInAnyOrganizationAsync(user);
+            if (_shouldBeIn)
             {
-                if (!_shouldBeIn)
+                if (!status)
+                {
                     context.Result = new RedirectToActionResult("Index", "Home", null);
+                }
+            }
+            else
+            {
+                if (status)
+                {
+                    context.Result = new RedirectToActionResult("Index", "Home", null);
+                }
             }
         }
     }

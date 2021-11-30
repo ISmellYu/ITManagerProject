@@ -455,5 +455,51 @@ namespace ITManagerProject.Controllers
         {
             return View();
         }
+        
+        [HttpPost]
+        [InOrganization]
+        public async Task<JsonResult> GetOffers()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var organization = await _organizationManager.GetOrganizationFromUserAsync(user);
+            var offers = await _offerManager.GetOffersByOrganization(organization);
+            return Json(offers);
+        }
+        
+        [HttpPost]
+        [InOrganization]
+        public async Task<JsonResult> GetApplications()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var org = await _organizationManager.GetOrganizationFromUserAsync(user);
+            var offers = await _offerManager.GetOffersByOrganizationId(org.Id);
+            var applications = new List<ToViewApplicationWithDetails>();
+            foreach (var offer in offers)
+            {
+                var apps = await _applicationManager.GetAllApplicationsByOfferId(offer.Id);
+                foreach (var app in apps)
+                {
+                    applications.Add(new ToViewApplicationWithDetails()
+                    {
+                        Application = app,
+                        Offer = offer,
+                        User = UserManagerExtensions.TransformToViewUser(await _applicationManager.GetUserByApplicationId(app.Id), offer.Role)
+                    });
+                }
+            }
+            return Json(applications);
+        }
+        
+        [HttpPost]
+        [InOrganization]
+        public async Task<JsonResult> GetUsers()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var organization = await _organizationManager.GetOrganizationFromUserAsync(user);
+            var users = await _organizationManager.GetAllUsersFromOrganizationAsync(organization.Name);
+            var transformedUsers = users.Select(u => UserManagerExtensions.TransformToViewUser(u.User, u.Roles.FirstOrDefault())).ToList();
+            return Json(transformedUsers);
+        }
+
     }
 }

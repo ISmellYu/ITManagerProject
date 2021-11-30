@@ -5,7 +5,10 @@
     ViewData["Title"] = "Oferty";
 }
 <div class="container-fluid">
-    @foreach (var offer in await _offerManager.GetAllOffers())
+    @{
+        var offers = await _offerManager.GetAllOffers();
+    }
+    @foreach (var offer in offers)
     {
         <div class="job-box d-md-flex align-items-center justify-content-between mb-30">
             <div class="job-left my-4 d-md-flex align-items-center flex-wrap">
@@ -38,6 +41,13 @@
             <div class="job-right my-4 flex-shrink-0">
                 <a asp-action="ShowOffer" asp-controller="Offers" asp-route-id="@offer.Id" class="btn d-block w-100 d-sm-inline-block btn-light">Aplikuj</a>
             </div>
+        </div>
+    }
+
+    @if (offers.Count == 0)
+    {
+        <div class="alert alert-warning text-center" role="alert">
+            Brak ofert
         </div>
     }
 </div>

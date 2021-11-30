@@ -4,8 +4,51 @@
 }
 
 <!-- Show cv -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h1 class="text-center">Aplikacja @Model.ApplicationWithDetails.User.FirstName @Model.ApplicationWithDetails.User.LastName na @Model.ApplicationWithDetails.Offer.Role</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h2 class="text-center">Osoba</h2>
+            <h4>Imie: @Model.ApplicationWithDetails.User.FirstName</h4>
+            <h4>Nazwisko: @Model.ApplicationWithDetails.User.LastName</h4>
+            <h4>Email: @Model.ApplicationWithDetails.User.Email</h4>
+            <h4>Panstwo: @Model.ApplicationWithDetails.User.Country</h4>
+            <h4>Miasto: @Model.ApplicationWithDetails.User.City</h4>
+            <h4>Kod pocztowy: @Model.ApplicationWithDetails.User.PostCode</h4>
+        </div>
+        <div class="col">
+            <h2 class="text-center">Szczegoly oferty</h2>
+            <h4>Nazwa oferty: @Model.ApplicationWithDetails.Offer.Name</h4>
+            <h4>Opis: @Model.ApplicationWithDetails.Offer.Description</h4>
+            <h4>Organizacja: @Model.ApplicationWithDetails.Offer.Company</h4>
+            <h4>Rola: @Model.ApplicationWithDetails.Offer.Role</h4>
+            <h4>Placa: @Model.ApplicationWithDetails.Offer.Salary</h4>
+            <h4>Lokalizacja: @Model.ApplicationWithDetails.Offer.Location</h4>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <h1 class="text-center">CV</h1>
+            <p class="text-xl-center text-wrap badge-primary" style="font-size: 4rem">@Model.ApplicationWithDetails.Application.Cv</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col text-center">
+            <a asp-action="AcceptApplication" asp-route-id="@Model.ApplicationWithDetails.Application.Id" class="btn btn-success">Akceptuj</a>
+            <a asp-action="RejectApplication" asp-route-id="@Model.ApplicationWithDetails.Application.Id" class="btn btn-danger">Usun</a>
+            
+        </div>
+        
 
-<a asp-action="AcceptApplication" asp-route-id="@Model.ApplicationWithDetails.Application.Id" class="btn btn-success">Akceptuj</a>
-<a asp-action="RejectApplication" asp-route-id="@Model.ApplicationWithDetails.Application.Id" class="btn btn-danger">Usun</a>
+    </div>
+    
+    
+</div>
+
 
 

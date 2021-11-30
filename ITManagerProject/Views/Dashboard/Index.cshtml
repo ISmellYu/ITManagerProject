@@ -1,1 +1,30 @@
-﻿
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm">
+            <canvas id="salaryChart" width="400" height="400"></canvas>
+        </div>
+        <div class="col-sm">
+            <div class="d-block bg-primary p-2 salaries">
+                <h1 class="text-center h1">Wynagrodzenia</h1>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="d-block bg-info p-2 offers">
+                <h1 class="text-center h1">Aktualne oferty</h1>
+            </div>
+            <div class="d-block bg-light p-2 applications">
+                <h1 class="text-center h1">Aktualne aplikacje</h1>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+@section Scripts
+{
+    <script src="js/dashboard.js"></script>
+}

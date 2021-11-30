@@ -116,6 +116,7 @@ namespace ITManagerProject.Managers
             else
             {
                 await UserManager.AddToRoleAsync(user, RoleTypesString.CEO);
+                await UserManager.ChangeSalary(user, 100);
             }
 
             await _dbContext.SaveChangesAsync();

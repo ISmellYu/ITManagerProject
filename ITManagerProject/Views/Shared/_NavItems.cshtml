@@ -1,17 +1,37 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<User> SignInManager
-@inject UserManager<User> UserManager
+@using ITManagerProject.Managers
+@using Microsoft.AspNetCore.Authorization
+@using ITManagerProject.HelperTypes
+@inject SignInManager<User> _signInManager
+@inject UserManager<User> _userManager
+@inject OrganizationManager<Organization> _organizationManager
+@inject IAuthorizationService _authorizationService
 
-@if (SignInManager.IsSignedIn(User))
+@if (_signInManager.IsSignedIn(User))
 {
-    var usr = await UserManager.GetUserAsync(User);
+    var usr = await _userManager.GetUserAsync(User);
+    var check = await _organizationManager.CheckIfInAnyOrganizationAsync(usr);
+    if (check)
+    {
+        if ((await _authorizationService.AuthorizeAsync(User, PolicyTypes.Users.View)).Succeeded)
+        {
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Employees" asp-controller="Dashboard">Pracownicy</a>
+            </li>
+        }
+        if ((await _authorizationService.AuthorizeAsync(User, PolicyTypes.Organization.ManageApplications)).Succeeded)
+        {
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Offers" asp-controller="Dashboard">Oferty</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Applications" asp-controller="Dashboard">Aplikacje</a>
+            </li>
+        }
+        
+    }
     <li class="nav-item">
-        <a class="nav-link" asp-action="Employees" asp-controller="Dashboard">Pracownicy</a>
+        <a class="nav-link" asp-controller="Offers" asp-action="Index">Wszystkie oferty</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" asp-action="Offers" asp-controller="Dashboard">Oferty</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" asp-action="Applications" asp-controller="Dashboard">Aplikacje</a>
-    </li>
+    
 }
