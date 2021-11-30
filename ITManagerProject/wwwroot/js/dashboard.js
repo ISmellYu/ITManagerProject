@@ -70,13 +70,9 @@
     let applications = await getApplications();
     
     applications.forEach(obj => {
-        console.log(obj);
         let application = obj.application;
-        console.log(application);
         let offer = obj.offer;
-        console.log(offer);
         let user = obj.user;
-        console.log(user);
         let id = application['id'];
         let html = `<div class="application" id="${id}">
                         <div class="application-name h3">${user['firstName']} ${user['lastName']} - ${offer["role"]}</div>
