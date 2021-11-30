@@ -56,8 +56,14 @@ namespace ITManagerProject.Managers
             if (!exists) return false;
 
             var org = Organizations.First(p => p.NormalizedName == organizationName.ToUpper());
+            var users = await GetAllUsersFromOrganizationAsync(org.Name);
             _dbContext.Organizations.Remove(org);
             await _dbContext.SaveChangesAsync();
+            foreach (var user in users)
+            {
+                await UserManager.RemoveFromRolesAsync(user, RoleTypesString.AllRolesAvailable);
+                await UserManager.ChangeSalary(user, 0);
+            }
             return true;
         }
         
@@ -86,6 +92,7 @@ namespace ITManagerProject.Managers
             else
             {
                 await UserManager.AddToRoleAsync(user, RoleTypesString.CEO);
+                await UserManager.ChangeSalary(user, 100);
             }
             
             await _dbContext.SaveChangesAsync();
@@ -264,7 +271,7 @@ namespace ITManagerProject.Managers
             return await _dbContext.UserOrganizations.FindAsync(user.Id, org.Id).AsTask();
         }
 
-        public async Task<List<UserOrganizationViewModel>> GetAllUsersFromOrganizationAsync(string organizationName)
+        public async Task<List<UserOrganizationViewModel>> GetAllUsersFromOrganizationAsyncByViewModel(string organizationName)
         {
             ThrowIfDisposed();
 
@@ -301,6 +308,38 @@ namespace ITManagerProject.Managers
 
             return listOfUsers;
         }
+
+        public async Task<List<User>> GetAllUsersFromOrganizationAsync(string organizationName)
+        {
+            ThrowIfDisposed();
+
+            if (string.IsNullOrWhiteSpace(organizationName))
+            {
+                throw new ArgumentException();
+            }
+
+            var normalizedName = Normalize(organizationName);
+            var exists = await CheckIfOrganizationExistsAsync(normalizedName);
+
+            if (!exists) return null;
+
+            var org = await GetOrganizationAsync(normalizedName);
+
+            var listOfUsers = new List<User>();
+            if (org != null)
+            {
+                var userIds = await GetUserIdsFromOrganization(org);
+                foreach (var id in userIds)
+                {
+                    var user = await UserManager.FindByIdAsync(id.ToString());
+                    listOfUsers.Add(user);
+                }
+            }
+
+            return listOfUsers;
+        }
+
+
 
         private async Task<User> GetUserById(int id)
         {

@@ -23,7 +23,7 @@
     if (await _organizationManager.CheckIfInAnyOrganizationAsync(usr))
     {
         var org = await _organizationManager.GetOrganizationFromUserAsync(usr);
-        var listOfUsers = await _organizationManager.GetAllUsersFromOrganizationAsync(org.Name);
+        var listOfUsers = await _organizationManager.GetAllUsersFromOrganizationAsyncByViewModel(org.Name);
         <div class="text-center">
             <h1 style="font-size: 70px">Witaj!</h1>
         </div>

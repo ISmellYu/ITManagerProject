@@ -432,6 +432,13 @@ namespace ITManagerProject.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Policy = PolicyTypes.Organization.Remove)]
+        [InOrganization]
+        public async Task<IActionResult> ManageOrganization()
+        {
+            return View();
+        }
+
         [Authorize(Policy = PolicyTypes.Organization.ManageApplications)]
         [InOrganization]
         public async Task<IActionResult> ShowApplication(string id)
@@ -496,7 +503,7 @@ namespace ITManagerProject.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             var organization = await _organizationManager.GetOrganizationFromUserAsync(user);
-            var users = await _organizationManager.GetAllUsersFromOrganizationAsync(organization.Name);
+            var users = await _organizationManager.GetAllUsersFromOrganizationAsyncByViewModel(organization.Name);
             var transformedUsers = users.Select(u => UserManagerExtensions.TransformToViewUser(u.User, u.Roles.FirstOrDefault())).ToList();
             return Json(transformedUsers);
         }

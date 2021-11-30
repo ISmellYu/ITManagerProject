@@ -13,7 +13,7 @@
         {
             public const string Remove = "Organization.Remove.Policy";
             public const string ManageApplications = "Organization.ManageApplications.Policy";
-            
+            public const string ManageOrganization = "Organization.ManageOrganization.Policy";
         }
     }
 }

@@ -28,8 +28,14 @@
                 <a class="nav-link" asp-action="Applications" asp-controller="Dashboard">Aplikacje</a>
             </li>
         }
-        
     }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Home" asp-action="CreateOrganizationInfo">Stworz organizacje</a>
+        </li>
+    }
+    
     <li class="nav-item">
         <a class="nav-link" asp-controller="Offers" asp-action="Index">Wszystkie oferty</a>
     </li>

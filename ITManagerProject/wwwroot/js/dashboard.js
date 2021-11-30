@@ -1,7 +1,6 @@
 ﻿$(document).ready(async function (){
     const ctx = document.getElementById('salaryChart').getContext('2d');
     let users = await getUsers();
-    //console.log(users);
     let backgroundColors = users.map(obj => randomRGB());
     const salaryChart = new Chart(ctx, {
         type: 'pie',
