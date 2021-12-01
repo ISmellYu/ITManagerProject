@@ -12,7 +12,7 @@
     var inOrganization = await OrganizationManager.CheckIfInAnyOrganizationAsync(usr);
     if (inOrganization)
     {
-        if ((await AuthorizationService.AuthorizeAsync(User, PolicyTypes.Organization.Remove)).Succeeded)
+        if ((await AuthorizationService.AuthorizeAsync(User, PolicyTypes.Organization.ManageOrganization)).Succeeded)
         {
             <li class="nav-item">
                 <a class="nav-link" asp-controller="Dashboard" asp-action="ManageOrganization">Zarzadzaj organiacja</a>

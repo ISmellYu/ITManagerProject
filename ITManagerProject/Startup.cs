@@ -78,6 +78,16 @@ namespace ITManagerProject
                     policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.Add);
                 });
                 
+                options.AddPolicy(PolicyTypes.Organization.ManageOrganization, policy =>
+                {
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Organization.ManageApplications);
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.Add);
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.Remove);
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.View);
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Users.Edit);
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Organization.ManageOrganization);
+                });
+                
             });
             services.ConfigureApplicationCookie(options =>
             {

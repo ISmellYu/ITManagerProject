@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using ITManagerProject.Contexts;
+using ITManagerProject.CustomAttributes;
 using ITManagerProject.HelperTypes;
 using ITManagerProject.Managers;
 using ITManagerProject.Models;
@@ -49,6 +50,8 @@ namespace ITManagerProject.Controllers
         [InOrganization]
         public async Task<IActionResult> Index()
         {
+            // Refreshing cookie to update claims/or smth
+            await HttpContext.RefreshLoginAsync();
             return View();
         }
 
@@ -432,10 +435,12 @@ namespace ITManagerProject.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Policy = PolicyTypes.Organization.Remove)]
+        [Authorize(Policy = PolicyTypes.Organization.ManageOrganization)]
         [InOrganization]
         public async Task<IActionResult> ManageOrganization()
         {
+            // Refreshing cookie to update claims/or smth
+            await HttpContext.RefreshLoginAsync();
             return View();
         }
 
