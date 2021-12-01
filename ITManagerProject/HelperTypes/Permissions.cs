@@ -54,6 +54,7 @@ namespace ITManagerProject.HelperTypes
             public const string Remove = "Permission.Organization.Remove";
             public const string ManageApplications = "Permission.Organization.ManageApplications";
             public const string ManageOrganization = "Permission.Organization.ManageOrganization";
+            public const string ManageSalaries = "Permission.Organization.ManageSalaries";
         }
 
         public static List<RoleClaim> GetSeedRoleClaims()
@@ -108,6 +109,13 @@ namespace ITManagerProject.HelperTypes
                     RoleId = 1,
                     ClaimType = CustomClaimTypes.Permission,
                     ClaimValue = Organization.ManageOrganization
+                },
+                new RoleClaim()
+                {
+                    Id = 8,
+                    RoleId = 1,
+                    ClaimType = CustomClaimTypes.Permission,
+                    ClaimValue = Organization.ManageSalaries
                 }
             };
 

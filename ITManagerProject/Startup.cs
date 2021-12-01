@@ -88,6 +88,11 @@ namespace ITManagerProject
                     policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Organization.ManageOrganization);
                 });
                 
+                options.AddPolicy(PolicyTypes.Organization.ManageSalaries, policy =>
+                {
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Organization.ManageSalaries);
+                });
+                
             });
             services.ConfigureApplicationCookie(options =>
             {

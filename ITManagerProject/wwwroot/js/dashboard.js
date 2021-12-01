@@ -65,6 +65,10 @@
         $('.offers').append(html);
     });
     
+    if (offers.length === 0){
+        $('.offers').append('<div class="text-center">Brak ofert</div>');
+    }
+    
     
     let applications = await getApplications();
     
@@ -79,6 +83,9 @@
         $('.applications').append(html);
     });
     
+    if (applications.length === 0){
+        $('.applications').append('<div class="text-center">Brak aplikacji</div>')
+    }
     
 })
 

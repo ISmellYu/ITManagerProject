@@ -513,5 +513,12 @@ namespace ITManagerProject.Controllers
             return Json(transformedUsers);
         }
 
+        [Authorize(Policy = PolicyTypes.Organization.ManageSalaries)]
+        [InOrganization]
+        public async Task<IActionResult> ManageSalaries()
+        {
+            return View();
+        }
+
     }
 }
