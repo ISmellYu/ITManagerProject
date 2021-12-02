@@ -22,7 +22,7 @@ namespace ITManagerProject.Managers
         private IQueryable<UserOrganization> UserOrganizations => _dbContext.UserOrganizations.AsQueryable().AsNoTracking();
         public readonly UserManager<User> UserManager;
         public readonly RoleManager<Role> RoleManager;
-        
+
         private bool _disposed;
 
         public OrganizationManager(UserAppContext dbContext, UserManager<User> userManager, RoleManager<Role> roleManager)

@@ -261,6 +261,17 @@ namespace ITManagerProject.Controllers
         {
             var user = await _organizationManager.UserManager.GetUserAsync(User);
             var organization = await _organizationManager.GetOrganizationFromUserAsync(user);
+            var offers = await _offerManager.GetOffersByOrganizationId(organization.Id);
+            var applications = new List<Application>();
+            foreach (var offer in offers)
+            {
+                var applicationToRemove = await _applicationManager.GetAllApplicationsByOfferId(offer.Id);
+                applicationToRemove.AddRange(applicationToRemove);
+            }
+
+            await _applicationManager.RemoveApplications(applications);
+            await _offerManager.RemoveOffers(offers);
+            
             await _organizationManager.RemoveAsync(organization.Name);
             return RedirectToAction("Index");
         }
@@ -297,7 +308,7 @@ namespace ITManagerProject.Controllers
                     ModelState.AddModelError("", "Oferta juz istnieje!");
                 }
 
-                _offerManager.AddOffer(new Offer()
+                await _offerManager.AddOffer(new Offer()
                 {
                     Company = organization.Name,
                     Description = model.Description,
@@ -325,7 +336,7 @@ namespace ITManagerProject.Controllers
             }
             if (offer.Company == organization.Name)
             {
-                _offerManager.DeleteOffer(offer);
+                await _offerManager.DeleteOffer(offer);
                 return RedirectToAction("Offers");
 
             }
@@ -386,7 +397,7 @@ namespace ITManagerProject.Controllers
                 await _applicationManager.RemoveApplication(new Application()
                 {
                     Id = Convert.ToInt32(id),
-                }, x.Id);
+                });
                 return RedirectToAction("Applications");
             }
             return RedirectToAction("Applications");

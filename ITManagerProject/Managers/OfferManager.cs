@@ -24,7 +24,7 @@ namespace ITManagerProject.Managers
             _context = context;
         }
         
-        public async void AddOffer(Offer offer, int orgId)
+        public async Task AddOffer(Offer offer, int orgId)
         {
             ThrowIfDisposed();
             
@@ -38,7 +38,7 @@ namespace ITManagerProject.Managers
             await _context.SaveChangesAsync();
         }
         
-        public async void DeleteOffer(Offer offer)
+        public async Task DeleteOffer(Offer offer)
         {
             ThrowIfDisposed();
 
@@ -46,7 +46,7 @@ namespace ITManagerProject.Managers
             await _context.SaveChangesAsync();
         }
         
-        public async void UpdateOffer(Offer offer)
+        public async Task UpdateOffer(Offer offer)
         {
             ThrowIfDisposed();
 
@@ -79,8 +79,8 @@ namespace ITManagerProject.Managers
         {
             ThrowIfDisposed();
 
-            var iqOffers = Offers.Where(p => p.Company.ToUpper() == org.NormalizedName);
-            return await iqOffers.ToListAsync();
+            var iqOffers = await Offers.Where(p => p.Company.ToUpper() == org.NormalizedName).ToListAsync();
+            return iqOffers;
         }
         
         public async Task<bool> OfferExists(int id)
@@ -140,6 +140,17 @@ namespace ITManagerProject.Managers
                 OrganizationId = orgId,
                 OfferId = offerId
             };
+        }
+
+        public async Task<bool> RemoveOffers(List<Offer> offers)
+        {
+            ThrowIfDisposed();
+            foreach (var offer in offers)
+            {
+                await DeleteOffer(offer);
+            }
+
+            return true;
         }
 
         public void Dispose()

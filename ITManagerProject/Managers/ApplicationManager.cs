@@ -46,7 +46,7 @@ namespace ITManagerProject.Managers
             return true;
         }
         
-        public async Task<bool> RemoveApplication(Application application, int offerId)
+        public async Task<bool> RemoveApplication(Application application)
         {
             ThrowIfDisposed();
             if (!(await CheckIfApplicationExists(application)))
@@ -75,7 +75,7 @@ namespace ITManagerProject.Managers
             var offer = await _offerManager.GetOfferById(offerId);
             await _organizationManager.AddToOrganizationAsync(user, organization, offer.Salary, offer.Role);
             //await _organizationManager.ChangeSalary(user, offer.Salary);
-            await RemoveApplication(application, offerId);
+            await RemoveApplication(application);
             return true;
         }
 
@@ -121,9 +121,8 @@ namespace ITManagerProject.Managers
         {
             ThrowIfDisposed();
             var offers = await _offerManager.GetOffersByOrganizationId(organizationId);
-            var ids = _offerApplications.Where(
-                p => offers.Any(x => x.Id == p.OfferId))
-                .Select(p => p.ApplicationId).ToList();
+            var offerApps = await _offerApplications.Where(p => offers.Any(x => x.Id == p.OfferId)).ToListAsync();
+            var ids = offerApps.Select(p => p.ApplicationId).ToList();
             var applications = await _applications.Where(p => ids.Contains(p.Id)).ToListAsync();
             return applications;
         }
@@ -152,6 +151,16 @@ namespace ITManagerProject.Managers
             ThrowIfDisposed();
             var offerApplication = await _offerApplications.FirstOrDefaultAsync(p => p.ApplicationId == applicationId);
             return await _offerManager.GetOfferById(offerApplication.OfferId);
+        }
+
+        public async Task<bool> RemoveApplications(List<Application> applications)
+        {
+            ThrowIfDisposed();
+            foreach (var application in applications)
+            {
+                await RemoveApplication(application);
+            }
+            return true;
         }
 
         public void Dispose()
