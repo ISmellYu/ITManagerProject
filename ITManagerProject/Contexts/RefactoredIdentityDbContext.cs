@@ -36,6 +36,8 @@ namespace ITManagerProject.Contexts
         
         public virtual DbSet<OfferApplication> OfferApplications { get; set; }
         public virtual DbSet<UserCookieRenew> UserCookieRenews { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<OrganizationNotification> OrganizationNotifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -47,6 +49,7 @@ namespace ITManagerProject.Contexts
                 b.HasMany<TUserOrganization>().WithOne().HasForeignKey(u => u.UserId).IsRequired();
                 b.HasMany<OfferApplication>().WithOne().HasForeignKey(u => u.UserId).IsRequired();
                 b.HasMany<UserCookieRenew>().WithOne().HasForeignKey(u => u.UserId).IsRequired();
+                b.HasMany<OrganizationNotification>().WithOne().HasForeignKey(u => u.AuthorId).IsRequired();
             });
             
             builder.Entity<TOrganization>(b =>
@@ -62,7 +65,8 @@ namespace ITManagerProject.Contexts
 
                 b.HasMany<TUserOrganization>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
                 b.HasMany<OrganizationOffer>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
-                
+                b.HasMany<OrganizationNotification>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
+
             });
             builder.Entity<TUserOrganization>(b =>
             {
@@ -102,7 +106,19 @@ namespace ITManagerProject.Contexts
                 b.HasKey(u => u.UserId);
                 b.ToTable("UserCookieRenew");
             });
-            
+
+            builder.Entity<Notification>(b =>
+            {
+                b.HasKey(u => u.Id);
+                b.HasMany<OrganizationNotification>().WithOne().HasForeignKey(u => u.NotificationId).IsRequired();
+                b.ToTable("Notifications");
+            });
+
+            builder.Entity<OrganizationNotification>(b =>
+            {
+                b.HasKey(u => new {u.AuthorId, u.OrganizationId, u.NotificationId});
+                b.ToTable("OrganizationNotifications");
+            });
             
         }
     }
