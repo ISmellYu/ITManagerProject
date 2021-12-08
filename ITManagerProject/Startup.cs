@@ -93,6 +93,11 @@ namespace ITManagerProject
                     policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Organization.ManageSalaries);
                 });
                 
+                options.AddPolicy(PolicyTypes.Organization.ManageNotifications, policy =>
+                {
+                    policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Organization.ManageNotifications);
+                });
+                
             });
             services.ConfigureApplicationCookie(options =>
             {

@@ -55,6 +55,7 @@ namespace ITManagerProject.HelperTypes
             public const string ManageApplications = "Permission.Organization.ManageApplications";
             public const string ManageOrganization = "Permission.Organization.ManageOrganization";
             public const string ManageSalaries = "Permission.Organization.ManageSalaries";
+            public const string ManageNotifications = "Permission.Organization.ManageNotifications";
         }
 
         public static List<RoleClaim> GetSeedRoleClaims()
@@ -116,6 +117,13 @@ namespace ITManagerProject.HelperTypes
                     RoleId = 1,
                     ClaimType = CustomClaimTypes.Permission,
                     ClaimValue = Organization.ManageSalaries
+                },
+                new RoleClaim()
+                {
+                    Id = 9,
+                    RoleId = 1,
+                    ClaimType = CustomClaimTypes.Permission,
+                    ClaimValue = Organization.ManageNotifications
                 }
             };
 

@@ -26,14 +26,6 @@ namespace ITManagerProject.Managers
             _organizationManager = organizationManager;
         }
 
-        public async Task<bool> AddNotification(string title, string body, int organizationId)
-        {
-            ThrowIfDisposed();
-
-            
-            return true;
-        }
-        
         public async Task<bool> AddNotification(string title, string body, int organizationId, int userId)
         {
             ThrowIfDisposed();
@@ -118,8 +110,27 @@ namespace ITManagerProject.Managers
 
             return notifications;
         }
-        
 
+        public async Task<List<Notification>> GetNotificationsByUserId(int userId)
+        {
+            ThrowIfDisposed();
+
+            var organizationNotifications =
+                await OrganizationNotifications.Where(on => on.AuthorId == userId).ToListAsync();
+
+            var notifications = new List<Notification>();
+
+            foreach (var organizationNotification in organizationNotifications)
+            {
+                var notification =
+                    await Notifications.FirstOrDefaultAsync(n => n.Id == organizationNotification.NotificationId);
+                notifications.Add(notification);
+            }
+
+            return notifications;
+        }
+        
+        
         public void Dispose()
         {
             Dispose(true);
