@@ -6,173 +6,172 @@ using ITManagerProject.Contexts;
 using ITManagerProject.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ITManagerProject.Managers
+namespace ITManagerProject.Managers;
+
+public class OfferManager : IDisposable
 {
-    public class OfferManager : IDisposable
+    private readonly UserAppContext _context;
+    private readonly OrganizationManager<Organization> _organizationManager;
+        
+    private IQueryable<Offer> Offers => _context.Offers.AsQueryable().AsNoTracking();
+    private IQueryable<OrganizationOffer> OrganizationOffers => _context.OrganizationOffers.AsQueryable().AsNoTracking();
+        
+    private bool _disposed = false;
+
+    public OfferManager(UserAppContext context, OrganizationManager<Organization> organizationManager)
     {
-        private readonly UserAppContext _context;
-        private readonly OrganizationManager<Organization> _organizationManager;
+        _organizationManager = organizationManager;
+        _context = context;
+    }
         
-        private IQueryable<Offer> Offers => _context.Offers.AsQueryable().AsNoTracking();
-        private IQueryable<OrganizationOffer> OrganizationOffers => _context.OrganizationOffers.AsQueryable().AsNoTracking();
-        
-        private bool _disposed = false;
-
-        public OfferManager(UserAppContext context, OrganizationManager<Organization> organizationManager)
-        {
-            _organizationManager = organizationManager;
-            _context = context;
-        }
-        
-        public async Task AddOffer(Offer offer, int orgId)
-        {
-            ThrowIfDisposed();
+    public async Task AddOffer(Offer offer, int orgId)
+    {
+        ThrowIfDisposed();
             
-            _context.Offers.Add(offer);
-            await _context.SaveChangesAsync();
-            _context.OrganizationOffers.Add(new OrganizationOffer()
-            {
-                OfferId = offer.Id,
-                OrganizationId = orgId
-            });
-            await _context.SaveChangesAsync();
-        }
+        _context.Offers.Add(offer);
+        await _context.SaveChangesAsync();
+        _context.OrganizationOffers.Add(new OrganizationOffer()
+        {
+            OfferId = offer.Id,
+            OrganizationId = orgId
+        });
+        await _context.SaveChangesAsync();
+    }
         
-        public async Task DeleteOffer(Offer offer)
-        {
-            ThrowIfDisposed();
+    public async Task DeleteOffer(Offer offer)
+    {
+        ThrowIfDisposed();
 
-            _context.Offers.Remove(offer);
-            await _context.SaveChangesAsync();
-        }
+        _context.Offers.Remove(offer);
+        await _context.SaveChangesAsync();
+    }
         
-        public async Task UpdateOffer(Offer offer)
-        {
-            ThrowIfDisposed();
+    public async Task UpdateOffer(Offer offer)
+    {
+        ThrowIfDisposed();
 
-            _context.Offers.Update(offer);
-            await _context.SaveChangesAsync();
-        }
+        _context.Offers.Update(offer);
+        await _context.SaveChangesAsync();
+    }
         
-        public async Task<List<Offer>> GetAllOffers()
-        {
-            ThrowIfDisposed();
+    public async Task<List<Offer>> GetAllOffers()
+    {
+        ThrowIfDisposed();
 
-            return await Offers.ToListAsync();
-        }
+        return await Offers.ToListAsync();
+    }
         
-        public async Task<Offer> GetOfferById(int id)
-        {
-            ThrowIfDisposed();
+    public async Task<Offer> GetOfferById(int id)
+    {
+        ThrowIfDisposed();
 
-            return await Offers.FirstOrDefaultAsync(p => p.Id == id);
-        }
+        return await Offers.FirstOrDefaultAsync(p => p.Id == id);
+    }
         
-        public async Task<Offer> GetOfferById(string id)
-        {
-            ThrowIfDisposed();
+    public async Task<Offer> GetOfferById(string id)
+    {
+        ThrowIfDisposed();
 
-            return await Offers.FirstOrDefaultAsync(p => p.Id == Convert.ToInt32(id));
-        }
+        return await Offers.FirstOrDefaultAsync(p => p.Id == Convert.ToInt32(id));
+    }
 
-        public async Task<List<Offer>> GetOffersByOrganization(Organization org)
-        {
-            ThrowIfDisposed();
+    public async Task<List<Offer>> GetOffersByOrganization(Organization org)
+    {
+        ThrowIfDisposed();
 
-            var iqOffers = await Offers.Where(p => p.Company.ToUpper() == org.NormalizedName).ToListAsync();
-            return iqOffers;
-        }
+        var iqOffers = await Offers.Where(p => p.Company.ToUpper() == org.NormalizedName).ToListAsync();
+        return iqOffers;
+    }
         
-        public async Task<bool> OfferExists(int id)
-        {
-            ThrowIfDisposed();
+    public async Task<bool> OfferExists(int id)
+    {
+        ThrowIfDisposed();
 
-            return await Offers.AnyAsync(p => p.Id == id);
-        }
+        return await Offers.AnyAsync(p => p.Id == id);
+    }
         
-        public async Task<bool> OfferExists(Offer offer)
-        {
-            ThrowIfDisposed();
+    public async Task<bool> OfferExists(Offer offer)
+    {
+        ThrowIfDisposed();
 
-            return await Offers.AnyAsync(p => p.Id == offer.Id);
-        }
+        return await Offers.AnyAsync(p => p.Id == offer.Id);
+    }
         
-        public async Task<Organization> GetOrganizationByOffer(Offer offer)
-        {
-            ThrowIfDisposed();
+    public async Task<Organization> GetOrganizationByOffer(Offer offer)
+    {
+        ThrowIfDisposed();
 
-            var orgOffer = await OrganizationOffers.FirstOrDefaultAsync(p => p.OfferId == offer.Id);
-            return await _organizationManager.GetOrganizationAsync(orgOffer.OrganizationId);
-        }
+        var orgOffer = await OrganizationOffers.FirstOrDefaultAsync(p => p.OfferId == offer.Id);
+        return await _organizationManager.GetOrganizationAsync(orgOffer.OrganizationId);
+    }
         
-        public async Task<List<Offer>> GetOffersByOrganizationId(int id)
+    public async Task<List<Offer>> GetOffersByOrganizationId(int id)
+    {
+        ThrowIfDisposed();
+
+        var orgOffers = await OrganizationOffers.Where(p => p.OrganizationId == id).ToListAsync();
+        var offers = new List<Offer>();
+        foreach (var orgOffer in orgOffers)
         {
-            ThrowIfDisposed();
-
-            var orgOffers = await OrganizationOffers.Where(p => p.OrganizationId == id).ToListAsync();
-            var offers = new List<Offer>();
-            foreach (var orgOffer in orgOffers)
-            {
-                var offer = await Offers.FirstOrDefaultAsync(p => p.Id == orgOffer.OfferId);
-                offers.Add(offer);
-            }
-            return offers;
+            var offer = await Offers.FirstOrDefaultAsync(p => p.Id == orgOffer.OfferId);
+            offers.Add(offer);
         }
+        return offers;
+    }
 
 
-        public OrganizationOffer CreateOrganizationOffer(Organization organization, Offer offer)
+    public OrganizationOffer CreateOrganizationOffer(Organization organization, Offer offer)
+    {
+        ThrowIfDisposed();
+
+        return new OrganizationOffer()
         {
-            ThrowIfDisposed();
-
-            return new OrganizationOffer()
-            {
-                OrganizationId = organization.Id,
-                OfferId = offer.Id
-            };
-        }
+            OrganizationId = organization.Id,
+            OfferId = offer.Id
+        };
+    }
         
-        public OrganizationOffer CreateOrganizationOffer(int orgId, int offerId)
-        {
-            ThrowIfDisposed();
+    public OrganizationOffer CreateOrganizationOffer(int orgId, int offerId)
+    {
+        ThrowIfDisposed();
 
-            return new OrganizationOffer()
-            {
-                OrganizationId = orgId,
-                OfferId = offerId
-            };
+        return new OrganizationOffer()
+        {
+            OrganizationId = orgId,
+            OfferId = offerId
+        };
+    }
+
+    public async Task<bool> RemoveOffers(List<Offer> offers)
+    {
+        ThrowIfDisposed();
+        foreach (var offer in offers)
+        {
+            await DeleteOffer(offer);
         }
 
-        public async Task<bool> RemoveOffers(List<Offer> offers)
-        {
-            ThrowIfDisposed();
-            foreach (var offer in offers)
-            {
-                await DeleteOffer(offer);
-            }
+        return true;
+    }
 
-            return true;
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (disposing && !_disposed)
+        {
+            _disposed = true;
         }
+    }
 
-        public void Dispose()
+    private void ThrowIfDisposed()
+    {
+        if (_disposed)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (disposing && !_disposed)
-            {
-                _disposed = true;
-            }
-        }
-
-        private void ThrowIfDisposed()
-        {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
-            }
+            throw new ObjectDisposedException(GetType().Name);
         }
     }
 }

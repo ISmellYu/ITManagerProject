@@ -1,9 +1,8 @@
 ﻿using ITManagerProject.HelperTypes;
 
-namespace ITManagerProject.ViewModels
+namespace ITManagerProject.ViewModels;
+
+public class ApplicationWithDetailsModel
 {
-    public class ApplicationWithDetailsModel
-    {
-        public ApplicationWithDetails ApplicationWithDetails { get; set; }
-    }
+    public ApplicationWithDetails ApplicationWithDetails { get; set; }
 }

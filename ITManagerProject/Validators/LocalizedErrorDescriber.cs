@@ -1,205 +1,204 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ITManagerProject.Validators
+namespace ITManagerProject.Validators;
+
+public class LocalizedIdentityErrorDescriber : IdentityErrorDescriber
 {
-    public class LocalizedIdentityErrorDescriber : IdentityErrorDescriber
+    public override IdentityError DuplicateEmail(string email)
     {
-        public override IdentityError DuplicateEmail(string email)
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(DuplicateEmail),
-                Description = "Uzytkownik z takim samym emailem juz istnieje!"
-            };
-        }
+            Code = nameof(DuplicateEmail),
+            Description = "Uzytkownik z takim samym emailem juz istnieje!"
+        };
+    }
 
-        public override IdentityError DuplicateUserName(string userName)
+    public override IdentityError DuplicateUserName(string userName)
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(DuplicateUserName),
-                Description = "Uzytkownik z takim samym loginem juz istnieje!"
-            };
-        }
+            Code = nameof(DuplicateUserName),
+            Description = "Uzytkownik z takim samym loginem juz istnieje!"
+        };
+    }
 
-        public override IdentityError InvalidEmail(string email)
+    public override IdentityError InvalidEmail(string email)
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(InvalidEmail),
-                Description = "Podales zly email"
-            };
-        }
+            Code = nameof(InvalidEmail),
+            Description = "Podales zly email"
+        };
+    }
 
-        public override IdentityError DuplicateRoleName(string role)
+    public override IdentityError DuplicateRoleName(string role)
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(DuplicateRoleName),
-                Description = "Dana rola juz istnieje!"
-            };
-        }
+            Code = nameof(DuplicateRoleName),
+            Description = "Dana rola juz istnieje!"
+        };
+    }
 
-        public override IdentityError InvalidRoleName(string role)
+    public override IdentityError InvalidRoleName(string role)
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(InvalidRoleName),
-                Description = "Zla nazwa roli!"
-            };
-        }
+            Code = nameof(InvalidRoleName),
+            Description = "Zla nazwa roli!"
+        };
+    }
 
-        public override IdentityError InvalidToken()
+    public override IdentityError InvalidToken()
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(InvalidToken),
-                Description = "Zły token!"
-            };
-        }
+            Code = nameof(InvalidToken),
+            Description = "Zły token!"
+        };
+    }
 
-        public override IdentityError InvalidUserName(string userName)
+    public override IdentityError InvalidUserName(string userName)
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(InvalidUserName),
-                Description = "Zła nazwa użytkownika"
-            };
-        }
+            Code = nameof(InvalidUserName),
+            Description = "Zła nazwa użytkownika"
+        };
+    }
 
-        public override IdentityError LoginAlreadyAssociated()
+    public override IdentityError LoginAlreadyAssociated()
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(LoginAlreadyAssociated),
-                Description = "huj"
-            };
-        }
+            Code = nameof(LoginAlreadyAssociated),
+            Description = "huj"
+        };
+    }
 
-        public override IdentityError PasswordMismatch()
+    public override IdentityError PasswordMismatch()
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(PasswordMismatch),
-                Description = "Hasla nie pasuja do siebie!"
-            };
-        }
+            Code = nameof(PasswordMismatch),
+            Description = "Hasla nie pasuja do siebie!"
+        };
+    }
 
-        public override IdentityError PasswordRequiresDigit()
+    public override IdentityError PasswordRequiresDigit()
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(PasswordRequiresDigit),
-                Description = "Hasło musi zawierać liczbe!"
-            };
-        }
+            Code = nameof(PasswordRequiresDigit),
+            Description = "Hasło musi zawierać liczbe!"
+        };
+    }
 
-        public override IdentityError PasswordRequiresLower()
+    public override IdentityError PasswordRequiresLower()
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(PasswordRequiresLower),
-                Description = "Hasło musi zawierać małą literę!"
-            };
-        }
+            Code = nameof(PasswordRequiresLower),
+            Description = "Hasło musi zawierać małą literę!"
+        };
+    }
 
-        public override IdentityError PasswordRequiresNonAlphanumeric()
+    public override IdentityError PasswordRequiresNonAlphanumeric()
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(PasswordRequiresNonAlphanumeric),
-                Description = "Hasło musi zawierac specjalny znak!"
-            };
-        }
+            Code = nameof(PasswordRequiresNonAlphanumeric),
+            Description = "Hasło musi zawierac specjalny znak!"
+        };
+    }
 
-        public override IdentityError PasswordRequiresUniqueChars(int uniqueChars)
+    public override IdentityError PasswordRequiresUniqueChars(int uniqueChars)
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(PasswordRequiresUniqueChars),
-                Description = $"Hasło musi zawierać {uniqueChars} unikalnych znaków"
-            };
-        }
+            Code = nameof(PasswordRequiresUniqueChars),
+            Description = $"Hasło musi zawierać {uniqueChars} unikalnych znaków"
+        };
+    }
 
-        public override IdentityError PasswordRequiresUpper()
+    public override IdentityError PasswordRequiresUpper()
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(PasswordRequiresUpper),
-                Description = "Hasło musi zawierać duża literę!"
-            };
-        }
+            Code = nameof(PasswordRequiresUpper),
+            Description = "Hasło musi zawierać duża literę!"
+        };
+    }
 
-        public override IdentityError PasswordTooShort(int length)
+    public override IdentityError PasswordTooShort(int length)
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(PasswordTooShort),
-                Description = $"Hasło powinno mieć {length} znaków!"
-            };
-        }
+            Code = nameof(PasswordTooShort),
+            Description = $"Hasło powinno mieć {length} znaków!"
+        };
+    }
 
-        public override IdentityError UserAlreadyHasPassword()
+    public override IdentityError UserAlreadyHasPassword()
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(UserAlreadyHasPassword),
-                Description = "Uzytkownika ma juz haslo!"
-            };
-        }
+            Code = nameof(UserAlreadyHasPassword),
+            Description = "Uzytkownika ma juz haslo!"
+        };
+    }
 
-        public override IdentityError UserAlreadyInRole(string role)
+    public override IdentityError UserAlreadyInRole(string role)
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(UserAlreadyInRole),
-                Description = $"Uzytkownik jest juz w roli {role}"
-            };
-        }
+            Code = nameof(UserAlreadyInRole),
+            Description = $"Uzytkownik jest juz w roli {role}"
+        };
+    }
 
-        public override IdentityError UserNotInRole(string role)
+    public override IdentityError UserNotInRole(string role)
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(UserNotInRole),
-                Description = $"Uzytkownik nie znajduje sie w roli {role}"
-            };
-        }
+            Code = nameof(UserNotInRole),
+            Description = $"Uzytkownik nie znajduje sie w roli {role}"
+        };
+    }
 
-        public override IdentityError UserLockoutNotEnabled()
+    public override IdentityError UserLockoutNotEnabled()
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(UserLockoutNotEnabled),
-                Description = "Uzytkownik nie jest zablokowany!"
-            };
-        }
+            Code = nameof(UserLockoutNotEnabled),
+            Description = "Uzytkownik nie jest zablokowany!"
+        };
+    }
 
-        public override IdentityError RecoveryCodeRedemptionFailed()
+    public override IdentityError RecoveryCodeRedemptionFailed()
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(RecoveryCodeRedemptionFailed),
-                Description = "Nie odebrano kodu przywracania!"
-            };
-        }
+            Code = nameof(RecoveryCodeRedemptionFailed),
+            Description = "Nie odebrano kodu przywracania!"
+        };
+    }
 
-        public override IdentityError ConcurrencyFailure()
+    public override IdentityError ConcurrencyFailure()
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(ConcurrencyFailure),
-                Description = "Błąd równoległych żądań"
-            };
-        }
+            Code = nameof(ConcurrencyFailure),
+            Description = "Błąd równoległych żądań"
+        };
+    }
 
-        public override IdentityError DefaultError()
+    public override IdentityError DefaultError()
+    {
+        return new IdentityError
         {
-            return new IdentityError
-            {
-                Code = nameof(DefaultError),
-                Description = "Błąd"
-            };
-        }
+            Code = nameof(DefaultError),
+            Description = "Błąd"
+        };
     }
 }

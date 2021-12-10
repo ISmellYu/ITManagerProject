@@ -1,8 +1,7 @@
-﻿namespace ITManagerProject.ViewModels.Interfaces
+﻿namespace ITManagerProject.ViewModels.Interfaces;
+
+public interface ILoginViewModel
 {
-    public interface ILoginViewModel
-    {
-        string Email { get; set; }
-        string Password { get; set; }
-    }
+    string Email { get; set; }
+    string Password { get; set; }
 }

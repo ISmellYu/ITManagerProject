@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace ITManagerProject.Validators
+namespace ITManagerProject.Validators;
+
+[AttributeUsage(AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
+public class ClaimRefresher : Attribute
 {
-    [AttributeUsage(AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
-    public class ClaimRefresher : Attribute
-    {
         
-    }
 }

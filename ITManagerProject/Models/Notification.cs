@@ -1,9 +1,8 @@
-namespace ITManagerProject.Models
+namespace ITManagerProject.Models;
+
+public class Notification
 {
-    public class Notification
-    {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public string Body { get; set; }
-    }
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public string Body { get; set; }
 }

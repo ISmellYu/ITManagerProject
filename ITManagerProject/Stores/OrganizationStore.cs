@@ -3,9 +3,8 @@ using System.Threading;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace ITManagerProject.Stores
+namespace ITManagerProject.Stores;
+
+public class OrganizationStore<TOrganization>
 {
-    public class OrganizationStore<TOrganization>
-    {
-    }
 }

@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ITManagerProject.ViewModels
+namespace ITManagerProject.ViewModels;
+
+public class ApplicationViewModel
 {
-    public class ApplicationViewModel
-    {
-        [Required]
-        public string Cv { get; set; }
-    }
+    [Required]
+    public string Cv { get; set; }
 }

@@ -1,7 +1,6 @@
-namespace ITManagerProject.Stores.Bases
+namespace ITManagerProject.Stores.Bases;
+
+public class OrganizationStoreBase
 {
-    public class OrganizationStoreBase
-    {
         
-    }
 }

@@ -1,17 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ITManagerProject.Models
-{
-    public class Role : IdentityRole<int>
-    {
-        public Role(string roleName) : base(roleName)
-        {
-            
-        }
+namespace ITManagerProject.Models;
 
-        public Role() : base()
-        {
+public class Role : IdentityRole<int>
+{
+    public Role(string roleName) : base(roleName)
+    {
             
-        }
+    }
+
+    public Role() : base()
+    {
+            
     }
 }

@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ITManagerProject.Models
+namespace ITManagerProject.Models;
+
+public class UserRole : IdentityUserRole<int>
 {
-    public class UserRole : IdentityUserRole<int>
-    {
         
-    }
 }

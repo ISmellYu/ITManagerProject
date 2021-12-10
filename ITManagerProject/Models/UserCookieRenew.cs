@@ -1,7 +1,6 @@
-﻿namespace ITManagerProject.Models
+﻿namespace ITManagerProject.Models;
+
+public class UserCookieRenew
 {
-    public class UserCookieRenew
-    {
-        public int UserId { get; set; }
-    }
+    public int UserId { get; set; }
 }

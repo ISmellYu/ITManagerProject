@@ -1,8 +1,7 @@
-﻿namespace ITManagerProject.Models
+﻿namespace ITManagerProject.Models;
+
+public class Application
 {
-    public class Application
-    {
-        public int Id { get; set; }
-        public string Cv { get; set; }
-    }
+    public int Id { get; set; }
+    public string Cv { get; set; }
 }

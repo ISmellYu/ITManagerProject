@@ -2,9 +2,8 @@
 using ITManagerProject.Models.Base;
 using ITManagerProject.Models.Interfaces;
 
-namespace ITManagerProject.Models
+namespace ITManagerProject.Models;
+
+public class Organization : IdentityOrganization<int>
 {
-    public class Organization : IdentityOrganization<int>
-    {
-    }
 }

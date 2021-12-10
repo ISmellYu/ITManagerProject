@@ -1,8 +1,7 @@
-﻿namespace ITManagerProject.ViewModels.Interfaces
+﻿namespace ITManagerProject.ViewModels.Interfaces;
+
+public interface IErrorViewModel
 {
-    public interface IErrorViewModel
-    {
-        string RequestId { get; set; }
-        bool ShowRequestId { get; }
-    }
+    string RequestId { get; set; }
+    bool ShowRequestId { get; }
 }

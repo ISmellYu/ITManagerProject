@@ -3,32 +3,31 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace ITManagerProject.Validators
+namespace ITManagerProject.Validators;
+
+public class ClaimRequirementAttribute : TypeFilterAttribute
 {
-    public class ClaimRequirementAttribute : TypeFilterAttribute
+    public ClaimRequirementAttribute(string claimType, string claimValue) : base(typeof(ClaimRequirementFilter))
     {
-        public ClaimRequirementAttribute(string claimType, string claimValue) : base(typeof(ClaimRequirementFilter))
-        {
-            Arguments = new object[] {new Claim(claimType, claimValue) };
-        }
+        Arguments = new object[] {new Claim(claimType, claimValue) };
+    }
+}
+
+public class ClaimRequirementFilter : IAuthorizationFilter
+{
+    readonly Claim _claim;
+
+    public ClaimRequirementFilter(Claim claim)
+    {
+        _claim = claim;
     }
 
-    public class ClaimRequirementFilter : IAuthorizationFilter
+    public void OnAuthorization(AuthorizationFilterContext context)
     {
-        readonly Claim _claim;
-
-        public ClaimRequirementFilter(Claim claim)
+        var hasClaim = context.HttpContext.User.Claims.Any(c => c.Type == _claim.Type && c.Value == _claim.Value);
+        if (!hasClaim)
         {
-            _claim = claim;
-        }
-
-        public void OnAuthorization(AuthorizationFilterContext context)
-        {
-            var hasClaim = context.HttpContext.User.Claims.Any(c => c.Type == _claim.Type && c.Value == _claim.Value);
-            if (!hasClaim)
-            {
-                context.Result = new ForbidResult();
-            }
+            context.Result = new ForbidResult();
         }
     }
 }

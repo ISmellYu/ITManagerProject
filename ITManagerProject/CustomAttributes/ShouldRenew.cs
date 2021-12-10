@@ -4,52 +4,51 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace ITManagerProject.CustomAttributes
-{
-    public class ShouldRenew : TypeFilterAttribute
-    {
-        public ShouldRenew() : base(typeof(ShouldRenewBase))
-        {
-            Arguments = new object[] { true };
-        }
+namespace ITManagerProject.CustomAttributes;
 
-        public ShouldRenew(bool shouldBeIn) : base(typeof(ShouldRenewBase))
-        {
-            Arguments = new object[] {shouldBeIn};
-        }
+public class ShouldRenew : TypeFilterAttribute
+{
+    public ShouldRenew() : base(typeof(ShouldRenewBase))
+    {
+        Arguments = new object[] { true };
     }
 
-    internal class ShouldRenewBase : ActionFilterAttribute
+    public ShouldRenew(bool shouldBeIn) : base(typeof(ShouldRenewBase))
     {
-        private readonly OrganizationManager<Organization> _organizationManager;
-        private readonly UserManager<User> _userManager;
-        private readonly bool _shouldBeIn;
-        
-        
-        public ShouldRenewBase(OrganizationManager<Organization> organizationManager, UserManager<User> userManager, bool shouldBeIn)
-        {
-            _organizationManager = organizationManager;
-            _userManager = userManager;
-            _shouldBeIn = shouldBeIn;
-        }
+        Arguments = new object[] {shouldBeIn};
+    }
+}
 
-        public override async void OnActionExecuting(ActionExecutingContext context)
+internal class ShouldRenewBase : ActionFilterAttribute
+{
+    private readonly OrganizationManager<Organization> _organizationManager;
+    private readonly UserManager<User> _userManager;
+    private readonly bool _shouldBeIn;
+        
+        
+    public ShouldRenewBase(OrganizationManager<Organization> organizationManager, UserManager<User> userManager, bool shouldBeIn)
+    {
+        _organizationManager = organizationManager;
+        _userManager = userManager;
+        _shouldBeIn = shouldBeIn;
+    }
+
+    public override async void OnActionExecuting(ActionExecutingContext context)
+    {
+        var user = await _userManager.GetUserAsync(context.HttpContext.User);
+        var status = await _organizationManager.CheckIfInAnyOrganizationAsync(user);
+        if (_shouldBeIn)
         {
-            var user = await _userManager.GetUserAsync(context.HttpContext.User);
-            var status = await _organizationManager.CheckIfInAnyOrganizationAsync(user);
-            if (_shouldBeIn)
+            if (!status)
             {
-                if (!status)
-                {
-                    context.Result = new RedirectToActionResult("Index", "Home", null);
-                }
+                context.Result = new RedirectToActionResult("Index", "Home", null);
             }
-            else
+        }
+        else
+        {
+            if (status)
             {
-                if (status)
-                {
-                    context.Result = new RedirectToActionResult("Index", "Home", null);
-                }
+                context.Result = new RedirectToActionResult("Index", "Home", null);
             }
         }
     }

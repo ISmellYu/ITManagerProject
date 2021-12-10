@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace ITManagerProject.Controllers
+namespace ITManagerProject.Controllers;
+
+public class ProjectController : Controller
 {
-    public class ProjectController : Controller
+    // GET
+    public IActionResult Index()
     {
-        // GET
-        public IActionResult Index()
-        {
-            return View();
-        }
+        return View();
     }
 }

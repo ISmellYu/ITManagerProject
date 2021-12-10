@@ -1,8 +1,7 @@
-﻿namespace ITManagerProject.Models
+﻿namespace ITManagerProject.Models;
+
+public class OrganizationOffer
 {
-    public class OrganizationOffer
-    {
-        public int OrganizationId { get; set; }
-        public int OfferId { get; set; }
-    }
+    public int OrganizationId { get; set; }
+    public int OfferId { get; set; }
 }

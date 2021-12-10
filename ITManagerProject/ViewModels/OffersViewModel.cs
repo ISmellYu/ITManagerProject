@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using ITManagerProject.Models;
 
-namespace ITManagerProject.ViewModels
+namespace ITManagerProject.ViewModels;
+
+public class OffersViewModel
 {
-    public class OffersViewModel
-    {
-        public List<Offer> Offers { get; set; }
-    }
+    public List<Offer> Offers { get; set; }
 }

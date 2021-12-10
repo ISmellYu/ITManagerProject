@@ -1,7 +1,6 @@
-﻿namespace ITManagerProject.Managers
+﻿namespace ITManagerProject.Managers;
+
+public class ToDoManager
 {
-    public class ToDoManager
-    {
         
-    }
 }

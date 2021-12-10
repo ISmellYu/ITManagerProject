@@ -1,12 +1,11 @@
 ﻿using ITManagerProject.Models;
 
-namespace ITManagerProject.HelperTypes
+namespace ITManagerProject.HelperTypes;
+
+public class ApplicationWithDetails
 {
-    public class ApplicationWithDetails
-    {
-        public Application Application { get; set; }
-        public User User { get; set; }
-        public Offer Offer { get; set; }
+    public Application Application { get; set; }
+    public User User { get; set; }
+    public Offer Offer { get; set; }
         
-    }
 }

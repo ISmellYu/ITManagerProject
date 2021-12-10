@@ -1,7 +1,6 @@
-﻿namespace ITManagerProject.ViewModels.Interfaces
+﻿namespace ITManagerProject.ViewModels.Interfaces;
+
+public interface IOrganizationViewModel
 {
-    public interface IOrganizationViewModel
-    {
-        string Name { get; set; }
-    }
+    string Name { get; set; }
 }

@@ -1,10 +1,9 @@
 ﻿using ITManagerProject.Models;
 
-namespace ITManagerProject.ViewModels
+namespace ITManagerProject.ViewModels;
+
+public class ApplyViewModel
 {
-    public class ApplyViewModel
-    {
-        public Offer Offer { get; set; }
-        public ApplicationViewModel ApplicationViewModel { get; set; }
-    }
+    public Offer Offer { get; set; }
+    public ApplicationViewModel ApplicationViewModel { get; set; }
 }

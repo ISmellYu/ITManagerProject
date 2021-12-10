@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ITManagerProject.Models
+namespace ITManagerProject.Models;
+
+public class UserToken : IdentityUserToken<int>
 {
-    public class UserToken : IdentityUserToken<int>
-    {
         
-    }
 }

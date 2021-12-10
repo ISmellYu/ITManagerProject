@@ -1,10 +1,9 @@
-﻿namespace ITManagerProject.ViewModels.Interfaces
+﻿namespace ITManagerProject.ViewModels.Interfaces;
+
+public interface IRegisterViewModel
 {
-    public interface IRegisterViewModel
-    {
-        string Email { get; set; }
-        string Password { get; set; }
-        string FirstName { get; set; }
-        string LastName { get; set; }
-    }
+    string Email { get; set; }
+    string Password { get; set; }
+    string FirstName { get; set; }
+    string LastName { get; set; }
 }
