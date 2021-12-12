@@ -38,6 +38,9 @@ public class RefactoredIdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRo
     public virtual DbSet<UserCookieRenew> UserCookieRenews { get; set; }
     public virtual DbSet<Notification> Notifications { get; set; }
     public virtual DbSet<OrganizationNotification> OrganizationNotifications { get; set; }
+    
+    public virtual DbSet<Event> Events { get; set; }
+    public virtual DbSet<EventOrganization> EventOrganizations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -66,6 +69,7 @@ public class RefactoredIdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRo
             b.HasMany<TUserOrganization>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
             b.HasMany<OrganizationOffer>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
             b.HasMany<OrganizationNotification>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
+            b.HasMany<EventOrganization>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
 
         });
         builder.Entity<TUserOrganization>(b =>
@@ -120,5 +124,20 @@ public class RefactoredIdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRo
             b.ToTable("OrganizationNotifications");
         });
             
+        
+        builder.Entity<Event>(b =>
+        {
+            b.HasKey(u => u.Id);
+            b.HasMany<EventOrganization>().WithOne().HasForeignKey(u => u.EventId).IsRequired();
+            b.ToTable("Events");
+        });
+        
+        builder.Entity<EventOrganization>(b =>
+        {
+            b.HasKey(u => new {u.EventId, u.OrganizationId});
+            b.ToTable("EventOrganizations");
+        });
+        
+        
     }
 }

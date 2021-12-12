@@ -116,6 +116,7 @@ public class Startup
         services.TryAddScoped<ApplicationManager>();
         services.TryAddScoped<OfferManager>();
         services.TryAddScoped<CompleteOfferManager>();
+        services.TryAddScoped<EventManager>();
         //services.AddAuthorization();
         services.AddLiveReload(config =>
         {

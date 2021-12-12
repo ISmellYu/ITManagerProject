@@ -87,6 +87,7 @@
         $('.applications').append('<div class="text-center">Brak aplikacji</div>')
     }
     
+
 })
 
 

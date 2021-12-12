@@ -28,6 +28,10 @@ async function getApplications() {
     return await postData('Dashboard/GetApplications', {});
 }
 
+async function getEvents() {
+    return await postData('Meeting/GetEvents', {});
+}
+
 
 const randomNum = () => Math.floor(Math.random() * (235 - 52 + 1) + 52);
 

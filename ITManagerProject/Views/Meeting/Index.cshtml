@@ -1,0 +1,89 @@
+﻿@{
+    ViewData["Title"] = "Spotkania";
+}
+<div class="container-fluid">
+    <div id="calender"></div>
+    <div class="pull-right">
+        <a class="btn btn-info">Dodaj spotkanie</a>
+    </div>
+
+</div>
+
+ 
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="eventTitle"></span></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="pDetails"></p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-danger" id="delete" href="/Meeting">Usun</a>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+ 
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/locale-all.js"></script>
+    <script>
+        $(document).ready(async function () {
+            let events = [];
+            let data = await getEvents();
+            $.each(data, function (i, v) {
+                                    events.push({
+                                        id: v.id,
+                                        title: v.title,
+                                        description: v.description,
+                                        start: moment(v.startDate),
+                                        end: v.endDate != null ? moment(v.endDate) : null,
+                                        color: v.color,
+                                        allDay : v.isFullDay
+                                    });
+                                })
+             
+            GenerateCalender(events);
+ 
+            function GenerateCalender(events) {
+                $('#calender').fullCalendar('destroy');
+                $('#calender').fullCalendar({
+                    locale: 'pl',
+                    contentHeight: 400,
+                    defaultDate: new Date(),
+                    timeFormat: 'h(:mm)a',
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,basicWeek,basicDay'
+                    },
+                    eventLimit: true,
+                    eventColor: '#378006',
+                    events: events,
+                    eventClick: function (calEvent, jsEvent, view) {              
+                        $('#myModal #eventTitle').text(calEvent.title);
+                        var $description = $('<div/>');
+                        $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
+                        if (calEvent.end != null) {
+                            $description.append($('<p/>').html('<b>Koniec:</b>' + calEvent.end.format("DD-MMM-YYYY HH:mm a")));
+                        }
+                        $description.append($('<p/>').html('<b>Opis:</b>' + calEvent.description));
+                        
+                        $('#myModal #pDetails').empty().html($description);
+                        let d = $('#delete');
+                        
+                        d.prop('href', 'Meeting/RemoveMeeting/' + calEvent.id);
+                        $('#myModal').modal();
+                    }
+                })
+            }
+        })
+    </script>
+}
