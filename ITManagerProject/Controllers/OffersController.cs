@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ITManagerProject.HelperTypes;
 using ITManagerProject.Managers;
 using ITManagerProject.Models;
 using ITManagerProject.ViewModels;
@@ -26,8 +27,9 @@ public class OffersController : Controller
         _offerManager = offerManager;
     }
     // GET
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
+        await HttpContext.RefreshLoginAsync();
         return View();
     }
         

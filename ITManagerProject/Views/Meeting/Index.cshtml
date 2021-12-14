@@ -1,12 +1,19 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Authorization
+@using ITManagerProject.HelperTypes
+@inject IAuthorizationService _authorizationService;
+@{
     ViewData["Title"] = "Spotkania";
 }
 <div class="container-fluid">
     <div id="calender"></div>
-    <div class="pull-right">
-        <a class="btn btn-info">Dodaj spotkanie</a>
-    </div>
-
+    @{
+        if ((await _authorizationService.AuthorizeAsync(User, PolicyTypes.Organization.ManageMeetings)).Succeeded)
+        {
+            <div class="pull-right">
+                <a class="btn btn-info" asp-action="AddMeeting" asp-controller="Meeting">Dodaj spotkanie</a>
+            </div>
+        }
+    }
 </div>
 
  
@@ -21,15 +28,18 @@
                 <p id="pDetails"></p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-danger" id="delete" href="/Meeting">Usun</a>
+                @{
+                    if ((await _authorizationService.AuthorizeAsync(User, PolicyTypes.Organization.ManageMeetings)).Succeeded)
+                    {
+                        <a class="btn btn-danger" id="delete" href="/Meeting">Usun</a>
+                    }
+                }
                 <button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
             </div>
         </div>
     </div>
 </div>
 
-
- 
 @section Scripts{
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
@@ -46,6 +56,7 @@
                                         start: moment(v.startDate),
                                         end: v.endDate != null ? moment(v.endDate) : null,
                                         color: v.color,
+                                        location: v.location,
                                         allDay : v.isFullDay
                                     });
                                 })
@@ -58,7 +69,7 @@
                     locale: 'pl',
                     contentHeight: 400,
                     defaultDate: new Date(),
-                    timeFormat: 'h(:mm)a',
+                    timeFormat: 'h(:mm)',
                     header: {
                         left: 'prev,next today',
                         center: 'title',
@@ -70,11 +81,12 @@
                     eventClick: function (calEvent, jsEvent, view) {              
                         $('#myModal #eventTitle').text(calEvent.title);
                         var $description = $('<div/>');
-                        $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
+                        $description.append($('<p/>').html('<b>Start: </b>' + calEvent.start.format("DD-MMM-YYYY HH:mm ")));
                         if (calEvent.end != null) {
-                            $description.append($('<p/>').html('<b>Koniec:</b>' + calEvent.end.format("DD-MMM-YYYY HH:mm a")));
+                            $description.append($('<p/>').html('<b>Koniec: </b>' + calEvent.end.format("DD-MMM-YYYY HH:mm ")));
                         }
-                        $description.append($('<p/>').html('<b>Opis:</b>' + calEvent.description));
+                        $description.append($('<p/>').html('<b>Opis: </b>' + calEvent.description));
+                        $description.append($('<p/>').html('<b>Lokalizacja: </b>' + calEvent.location));
                         
                         $('#myModal #pDetails').empty().html($description);
                         let d = $('#delete');

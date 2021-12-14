@@ -36,6 +36,7 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
+        await HttpContext.RefreshLoginAsync();
         return View();
     }
 

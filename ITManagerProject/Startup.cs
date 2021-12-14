@@ -97,6 +97,12 @@ public class Startup
             {
                 policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Organization.ManageNotifications);
             });
+            
+            options.AddPolicy(PolicyTypes.Organization.ManageMeetings, policy =>
+            {
+                policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Organization.ManageMeetings);
+            });
+            
                 
         });
         services.ConfigureApplicationCookie(options =>
