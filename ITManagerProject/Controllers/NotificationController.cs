@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ITManagerProject.Controllers;
-
+[Authorize]
 public class NotificationController : Controller
 {
     private readonly OrganizationManager<Organization> _organizationManager;

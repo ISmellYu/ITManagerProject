@@ -17,5 +17,6 @@ public static class PolicyTypes
         public const string ManageSalaries = "Organization.ManageSalaries.Policy";
         public const string ManageNotifications = "Organization.ManageNotifications.Policy";
         public const string ManageMeetings = "Organization.ManageMeetings.Policy";
+        public const string ManageProjects = "Organization.ManageProjects.Policy";
     }
 }

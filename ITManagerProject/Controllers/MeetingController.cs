@@ -7,9 +7,11 @@ using ITManagerProject.Models;
 using ITManagerProject.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor.Internal;
 
 namespace ITManagerProject.Controllers;
 
+[Authorize]
 [InOrganization]
 public class MeetingController : Controller
 {

@@ -32,6 +32,9 @@ async function getEvents() {
     return await postData('Meeting/GetEvents', {});
 }
 
+async function getProjects() {
+    return await postData('Project/GetProjects', {});
+}
 
 const randomNum = () => Math.floor(Math.random() * (235 - 52 + 1) + 52);
 

@@ -57,6 +57,7 @@ public static class Permissions
         public const string ManageSalaries = "Permission.Organization.ManageSalaries";
         public const string ManageNotifications = "Permission.Organization.ManageNotifications";
         public const string ManageMeetings = "Permission.Organization.ManageMeetings";
+        public const string ManageProjects = "Permission.Organization.ManageProjects";
     }
 
     public static List<RoleClaim> GetSeedRoleClaims()
@@ -132,6 +133,13 @@ public static class Permissions
                 RoleId = 1,
                 ClaimType = CustomClaimTypes.Permission,
                 ClaimValue = Organization.ManageMeetings
+            },
+            new RoleClaim()
+            {
+                Id = 11,
+                RoleId = 1,
+                ClaimType = CustomClaimTypes.Permission,
+                ClaimValue = Organization.ManageProjects
             }
         };
 

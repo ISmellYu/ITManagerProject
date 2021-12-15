@@ -41,6 +41,10 @@ public class RefactoredIdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRo
     
     public virtual DbSet<Event> Events { get; set; }
     public virtual DbSet<EventOrganization> EventOrganizations { get; set; }
+    
+    public virtual DbSet<Project> Projects { get; set; }
+    
+    public virtual DbSet<ProjectOrganization> ProjectOrganizations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -70,6 +74,7 @@ public class RefactoredIdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRo
             b.HasMany<OrganizationOffer>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
             b.HasMany<OrganizationNotification>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
             b.HasMany<EventOrganization>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
+            b.HasMany<ProjectOrganization>().WithOne().HasForeignKey(u => u.OrganizationId).IsRequired();
 
         });
         builder.Entity<TUserOrganization>(b =>
@@ -137,7 +142,18 @@ public class RefactoredIdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRo
             b.HasKey(u => new {u.EventId, u.OrganizationId});
             b.ToTable("EventOrganizations");
         });
+
+        builder.Entity<Project>(b =>
+        {
+            b.HasKey(u => u.Id);
+            b.HasMany<ProjectOrganization>().WithOne().HasForeignKey(u => u.ProjectId).IsRequired();
+        });
         
+        builder.Entity<ProjectOrganization>(b =>
+        {
+            b.HasKey(u => new {u.ProjectId, u.OrganizationId});
+            b.ToTable("ProjectOrganizations");
+        });
         
     }
 }

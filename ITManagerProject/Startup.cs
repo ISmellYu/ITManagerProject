@@ -103,7 +103,10 @@ public class Startup
                 policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Organization.ManageMeetings);
             });
             
-                
+            options.AddPolicy(PolicyTypes.Organization.ManageProjects, policy =>
+            {
+                policy.RequireClaim(CustomClaimTypes.Permission, Permissions.Organization.ManageProjects);
+            });
         });
         services.ConfigureApplicationCookie(options =>
         {
@@ -123,6 +126,7 @@ public class Startup
         services.TryAddScoped<OfferManager>();
         services.TryAddScoped<CompleteOfferManager>();
         services.TryAddScoped<EventManager>();
+        services.TryAddScoped<ProjectManager>();
         //services.AddAuthorization();
         services.AddLiveReload(config =>
         {
