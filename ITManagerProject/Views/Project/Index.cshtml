@@ -1,23 +1,32 @@
-﻿@{
+﻿@using ITManagerProject.Managers
+@inject ProjectManager projectManager
+@inject OrganizationManager<Organization> organizationManager
+@{
     ViewData["Title"] = "Projekty";
 }
-
+@{
+    var user = await organizationManager.UserManager.GetUserAsync(User);
+    var org = await organizationManager.GetOrganizationFromUserAsync(user);
+    var projects = await projectManager.GetProjectsByOrganization(org.Id);
+}
 <div class="container-fluid">
     <div class="row">
         <div class="col" id="projects">
-            <a class="btn btn-success right" asp-action="CreateProject" asp-controller="Project">Dodaj projekt</a>
+            <a class="btn btn-success align-content-center" asp-action="CreateProject" asp-controller="Project">Dodaj projekt</a>
+            @foreach (var project in projects)
+            {
+                <div class="card">
+                    <div class="card-header">
+                        <h4>@project.Status Priorytet: @project.Priority</h4>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@project.Name</h5>
+                        <h6>Manager projektu: @project.ManagerName</h6>
+                        <p class="card-text">@project.Description</p>
+                        <a class="btn btn-info" asp-action="EditProject" asp-controller="Project" asp-route-id="@project.Id">Edytuj</a>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
-
-@section Scripts
-{
-    <script>
-    $(document).ready(async function() {
-        let data = await getProjects();
-        $.each(data, function(key, val) {
-            $("#projects").append("<div class='card'><div class='card-header'>" + val.status + " Priorytet: " + val.priority +"</div><div class='card-body'><h5 class='card-title'>" + val.name + "</h5><h6>Manager projektu: " + val.managerName +"</h6><p class='card-text'>" + val.description + "</p></div></div>");
-        });
-    });
-    </script>
-}

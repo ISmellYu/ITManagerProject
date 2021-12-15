@@ -79,6 +79,7 @@ public class ProjectManager : IDisposable
             projectToUpdate.Name = project.Name;
             projectToUpdate.Description = project.Description;
             projectToUpdate.Status = project.Status;
+            projectToUpdate.Priority = project.Priority;
             await _context.SaveChangesAsync();
             return true;
         }
@@ -107,6 +108,14 @@ public class ProjectManager : IDisposable
         return await Projects.Where(p => ids.Contains(p.Id)).ToListAsync();
     }
     
+    public async Task<Organization> GetOrganizationFromProject(int projectId)
+    {
+        ThrowIfDisposed();
+        var projectOrganization = await ProjectOrganizations.FirstOrDefaultAsync(p => p.ProjectId == projectId);
+        var org = await _organizationManager.GetOrganizationAsync(projectOrganization.OrganizationId);
+        return org;
+    }
+
     public void Dispose()
     {
         Dispose(true);
