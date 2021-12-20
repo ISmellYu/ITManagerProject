@@ -18,12 +18,12 @@ public class UserAppContext : RefactoredIdentityDbContext<User, Role, int, UserC
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        builder.Entity<User>().ToTable("Users");
-        builder.Entity<Role>().ToTable("Roles").HasData(RoleTypesString.GetAllRolesToBeSeeded());
-        builder.Entity<UserClaim>().ToTable("UserClaims");
-        builder.Entity<UserRole>().ToTable("UserRoles");
-        builder.Entity<UserLogin>().ToTable("UserLogins");
-        builder.Entity<RoleClaim>().ToTable("RoleClaims").HasData(Permissions.GetSeedRoleClaims());
-        builder.Entity<UserToken>().ToTable("UserTokens");
+        builder.Entity<User>().ToTable("users");
+        builder.Entity<Role>().ToTable("roles").HasData(RoleTypesString.GetAllRolesToBeSeeded());
+        builder.Entity<UserClaim>().ToTable("userclaims");
+        builder.Entity<UserRole>().ToTable("userroles");
+        builder.Entity<UserLogin>().ToTable("userlogins");
+        builder.Entity<RoleClaim>().ToTable("roleclaims").HasData(Permissions.GetSeedRoleClaims());
+        builder.Entity<UserToken>().ToTable("usertokens");
     }
 }

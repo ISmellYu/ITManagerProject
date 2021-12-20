@@ -63,7 +63,7 @@ public class RefactoredIdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRo
         {
             b.HasKey(u => u.Id);
             b.HasIndex(u => u.NormalizedName).HasDatabaseName("OrganizationNameIndex").IsUnique();
-            b.ToTable("Organizations");
+            b.ToTable("organizations");
 
             b.Property(u => u.ConcurrencyStamp).IsConcurrencyToken();
 
@@ -80,7 +80,7 @@ public class RefactoredIdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRo
         builder.Entity<TUserOrganization>(b =>
         {
             b.HasKey(u => new { u.UserId, u.OrganizationId });
-            b.ToTable("UserOrganizations");
+            b.ToTable("userorganizations");
         });
 
         builder.Entity<Offer>(b =>
@@ -88,45 +88,45 @@ public class RefactoredIdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRo
             b.HasKey(u => u.Id);
             b.HasMany<OrganizationOffer>().WithOne().HasForeignKey(u => u.OfferId).IsRequired();
             b.HasMany<OfferApplication>().WithOne().HasForeignKey(u => u.OfferId).IsRequired();
-            b.ToTable("Offers");
+            b.ToTable("offers");
         });
 
         builder.Entity<OrganizationOffer>(b =>
         {
             b.HasKey(u => new { u.OfferId, u.OrganizationId });
-            b.ToTable("OrganizationOffers");
+            b.ToTable("organizationoffers");
         });
 
         builder.Entity<Application>(b =>
         {
             b.HasKey(u => u.Id);
             b.HasMany<OfferApplication>().WithOne().HasForeignKey(u => u.ApplicationId).IsRequired();
-            b.ToTable("Applications");
+            b.ToTable("applications");
         });
 
         builder.Entity<OfferApplication>(b =>
         {
             b.HasKey(u => new { u.ApplicationId, u.OfferId, u.UserId });
-            b.ToTable("OfferApplications");
+            b.ToTable("offerapplications");
         });
             
         builder.Entity<UserCookieRenew>(b =>
         {
             b.HasKey(u => u.UserId);
-            b.ToTable("UserCookieRenew");
+            b.ToTable("usercookierenew");
         });
 
         builder.Entity<Notification>(b =>
         {
             b.HasKey(u => u.Id);
             b.HasMany<OrganizationNotification>().WithOne().HasForeignKey(u => u.NotificationId).IsRequired();
-            b.ToTable("Notifications");
+            b.ToTable("notifications");
         });
 
         builder.Entity<OrganizationNotification>(b =>
         {
             b.HasKey(u => new {u.AuthorId, u.OrganizationId, u.NotificationId});
-            b.ToTable("OrganizationNotifications");
+            b.ToTable("organizationnotifications");
         });
             
         
@@ -134,13 +134,13 @@ public class RefactoredIdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRo
         {
             b.HasKey(u => u.Id);
             b.HasMany<EventOrganization>().WithOne().HasForeignKey(u => u.EventId).IsRequired();
-            b.ToTable("Events");
+            b.ToTable("events");
         });
         
         builder.Entity<EventOrganization>(b =>
         {
             b.HasKey(u => new {u.EventId, u.OrganizationId});
-            b.ToTable("EventOrganizations");
+            b.ToTable("eventorganizations");
         });
 
         builder.Entity<Project>(b =>
@@ -152,7 +152,7 @@ public class RefactoredIdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRo
         builder.Entity<ProjectOrganization>(b =>
         {
             b.HasKey(u => new {u.ProjectId, u.OrganizationId});
-            b.ToTable("ProjectOrganizations");
+            b.ToTable("projectorganizations");
         });
         
     }
