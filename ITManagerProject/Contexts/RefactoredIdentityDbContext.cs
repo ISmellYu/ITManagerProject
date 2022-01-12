@@ -147,6 +147,7 @@ public class RefactoredIdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRo
         {
             b.HasKey(u => u.Id);
             b.HasMany<ProjectOrganization>().WithOne().HasForeignKey(u => u.ProjectId).IsRequired();
+            b.ToTable("projects");
         });
         
         builder.Entity<ProjectOrganization>(b =>

@@ -45,7 +45,7 @@ public class MeetingController : Controller
         if (ModelState.IsValid)
         {
             var user = await _organizationManager.UserManager.GetUserAsync(User);
-            var organization = await _organizationManager.GetOrganizationAsync(user.Id);
+            var organization = await _organizationManager.GetOrganizationFromUserAsync(user);
             if (viewModel.Start > viewModel.End)
             {
                 ModelState.AddModelError("Start", "Data poczatkowa powinna byc mniejsza od daty końcowaej");
@@ -75,7 +75,7 @@ public class MeetingController : Controller
     public async Task<IActionResult> RemoveMeeting(string id)
     {
         var user = await _organizationManager.UserManager.GetUserAsync(User);
-        var organization = await _organizationManager.GetOrganizationAsync(user.Id);
+        var organization = await _organizationManager.GetOrganizationFromUserAsync(user);
         var meeting = await _eventManager.DeleteEvent(Convert.ToInt32(id));
         return RedirectToAction("Index");
     }
@@ -85,7 +85,7 @@ public class MeetingController : Controller
     public async Task<JsonResult> GetEvents()
     {
         var user = await _organizationManager.UserManager.GetUserAsync(User);
-        var organization = await _organizationManager.GetOrganizationAsync(user.Id);
+        var organization = await _organizationManager.GetOrganizationFromUserAsync(user);
         var events = await _eventManager.GetAllEvents(organization.Id);
         return Json(events);
     }
