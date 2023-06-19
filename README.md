@@ -36,7 +36,7 @@ Project about managing an organization. Project offers creating an organization,
 ![alt text](https://i.ibb.co/gWfJSNm/addoffer.png)
 
 **Showing offer info**
-![alt text](https://i.ibb.co/RBz2yTf/offerinfo.png)
+![alt text](https://i.ibb.co/RPqPz8m/offerinfo1.png)
 
 **Applying to offer**
 ![alt text](https://i.ibb.co/sWsF3zk/sendapplication.png)
@@ -61,7 +61,3 @@ Project about managing an organization. Project offers creating an organization,
 
 **Profile info**
 ![alt text](https://i.ibb.co/BgcsThn/profile.png)
-
-
-
-
